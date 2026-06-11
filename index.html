@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>みんなの未来給食 ─ 未来シミュレーター</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf6ec;
+    --cream-deep: #f3ecd9;
+    --paper: #fffdf7;
+    --green: #5e8c52;
+    --green-deep: #44693b;
+    --green-pale: #e9f0e2;
+    --green-soft: #a8c49a;
+    --terra: #d9775f;
+    --terra-pale: #fbeae4;
+    --sky: #a9c8d4;
+    --sky-pale: #eaf2f5;
+    --earth: #8c7158;
+    --earth-pale: #f1ebe2;
+    --ink: #4a4438;
+    --ink-soft: #8a8270;
+    --line: #e4dcc8;
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.8;
+    font-weight: 500;
+  }
+
+  .wrap { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+
+  /* ───────────── header ───────────── */
+  .hero {
+    text-align: center;
+    padding: 56px 20px 40px;
+    position: relative;
+  }
+  .hero .leaf-row { margin-bottom: 14px; }
+  .hero .eyebrow {
+    display: inline-block;
+    font-size: 0.82rem;
+    color: var(--green);
+    letter-spacing: 0.28em;
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--green-deep);
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+  }
+  .hero .subtitle {
+    margin-top: 14px;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    line-height: 2;
+  }
+  .hero .ribbon {
+    display: inline-block;
+    margin-top: 22px;
+    background: var(--paper);
+    border: 1.5px solid var(--green-soft);
+    border-radius: 999px;
+    padding: 8px 26px;
+    font-size: 0.88rem;
+    color: var(--green-deep);
+  }
+
+  /* dotted divider */
+  .dots {
+    text-align: center;
+    margin: 8px auto 36px;
+    color: var(--green-soft);
+    letter-spacing: 0.6em;
+    font-size: 0.8rem;
+    user-select: none;
+  }
+
+  /* ───────────── section heading (pamphlet style) ───────────── */
+  .sec-head { text-align: center; margin-bottom: 26px; }
+  .sec-head .sec-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--ink);
+    font-size: 1.12rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .sec-num {
+    flex-shrink: 0;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--green);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .sec-title.terra .sec-num { background: var(--terra); }
+  .sec-title.sky .sec-num { background: #7da7b5; }
+  .sec-title .kw { color: var(--terra); }
+  .sec-title.terra { color: var(--ink); }
+  .sec-title.sky { color: var(--ink); }
+  .sec-head .sec-dotline {
+    width: 200px; margin: 6px auto 0;
+    border-bottom: 2.5px dotted var(--green-soft);
+  }
+  .sec-head .sec-sub {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.12em;
+  }
+  .sec-head svg { display: block; }
+
+  /* ───────────── cards ───────────── */
+  .card {
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    padding: 34px 30px;
+    margin-bottom: 44px;
+  }
+  @media (max-width: 480px) { .card { padding: 26px 20px; } }
+
+  /* ───────────── step flow ───────────── */
+  .step-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--green-pale);
+    border: 1.5px solid var(--green-soft);
+    color: var(--green-deep);
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-q { font-size: 1.02rem; font-weight: 700; color: var(--green-deep); }
+
+  .step-block { margin-bottom: 30px; }
+  .step-block:last-of-type { margin-bottom: 0; }
+
+  .num-input-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding-left: 46px;
+  }
+  input[type=number] {
+    width: 130px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    font-size: 1.25rem;
+    font-family: inherit;
+    font-weight: 700;
+    color: var(--green-deep);
+    text-align: center;
+    background: var(--paper);
+    transition: border-color 0.2s;
+  }
+  input[type=number]:focus { outline: none; border-color: var(--green-soft); }
+  .num-suffix { font-size: 0.95rem; color: var(--ink-soft); }
+
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-left: 46px;
+  }
+  @media (max-width: 480px) { .pill-row, .num-input-row { padding-left: 0; } }
+
+  .pill {
+    border: 1.5px solid var(--line);
+    background: var(--paper);
+    border-radius: 999px;
+    padding: 9px 22px;
+    font-size: 0.92rem;
+    font-family: inherit;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pill:hover { border-color: var(--green-soft); color: var(--green-deep); }
+  .pill.active {
+    background: var(--green-pale);
+    border-color: var(--green);
+    color: var(--green-deep);
+    font-weight: 700;
+  }
+
+  .go-btn {
+    display: block;
+    margin: 36px auto 0;
+    background: var(--terra);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 16px 54px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    font-family: inherit;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #b85c46;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .go-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #b85c46; }
+  .go-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b85c46; }
+
+  /* ───────────── future scene ───────────── */
+  #future-scene { display: none; }
+
+  .scene-frame {
+    background: linear-gradient(180deg, #f4f8f0 0%, var(--paper) 100%);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 26px;
+  }
+  .scene-frame svg { display: block; width: 100%; height: auto; }
+
+  @keyframes sunPulse { 0%,100% { opacity: 0.85; } 50% { opacity: 1; } }
+  @keyframes cloudDrift { from { transform: translateX(0); } to { transform: translateX(26px); } }
+  @keyframes steamRise {
+    0% { transform: translateY(0); opacity: 0; }
+    30% { opacity: 0.7; }
+    100% { transform: translateY(-14px); opacity: 0; }
+  }
+  .sun-g { animation: sunPulse 5s ease-in-out infinite; }
+  .cloud-g { animation: cloudDrift 18s ease-in-out infinite alternate; }
+  .cloud-g2 { animation: cloudDrift 24s ease-in-out infinite alternate-reverse; }
+  .steam { animation: steamRise 3.2s ease-out infinite; }
+  .steam.s2 { animation-delay: 1.1s; }
+  .steam.s3 { animation-delay: 2.2s; }
+
+  .scene-story { text-align: center; padding: 4px 10px; }
+  .scene-story p {
+    font-size: 1rem;
+    color: var(--ink);
+    line-height: 2.2;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 1.1s ease, transform 1.1s ease;
+  }
+  .scene-story p.shown { opacity: 1; transform: none; }
+
+  .scene-more {
+    display: block;
+    margin: 30px auto 0;
+    background: var(--paper);
+    color: var(--green-deep);
+    border: 1.5px solid var(--green-soft);
+    border-radius: 999px;
+    padding: 12px 40px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: inherit;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 1s ease, background 0.2s, color 0.2s;
+  }
+  .scene-more.shown { opacity: 1; }
+  .scene-more:hover { background: var(--green-pale); }
+
+  /* ───────────── results ───────────── */
+  #results { display: none; }
+
+  .impact-card {
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    padding: 32px 30px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  @media (max-width: 480px) { .impact-card { padding: 26px 18px; } }
+
+  .impact-card .ic-icon { margin-bottom: 12px; }
+  .impact-card h3 {
+    font-size: 1.18rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+  }
+  .impact-card.water h3 { color: #5d8fa3; }
+  .impact-card.land  h3 { color: var(--earth); }
+  .impact-card.co2   h3 { color: var(--green-deep); }
+
+  .impact-lead {
+    font-size: 1.02rem;
+    line-height: 2.1;
+    margin-bottom: 20px;
+  }
+  .impact-lead strong { font-weight: 700; }
+  .impact-card.water .impact-lead strong { color: #4a7b8e; }
+  .impact-card.land  .impact-lead strong { color: var(--earth); }
+  .impact-card.co2   .impact-lead strong { color: var(--green-deep); }
+
+  .impact-numline {
+    display: inline-block;
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 8px 24px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+  .impact-numline b { font-size: 1rem; color: var(--ink); font-weight: 700; }
+
+  .compare-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .compare-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1.5px dashed var(--line);
+    border-radius: 999px;
+    padding: 7px 18px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    background: var(--paper);
+  }
+  .compare-chip b { color: var(--ink); font-weight: 700; }
+
+  /* ───────────── reflection ───────────── */
+  .reflection {
+    background: var(--terra-pale);
+    border: 1.5px solid #ecc6ba;
+    border-radius: var(--radius);
+    padding: 38px 32px;
+    margin-bottom: 44px;
+    text-align: center;
+  }
+  .reflection p {
+    font-size: 1.02rem;
+    line-height: 2.4;
+    color: #7d5547;
+  }
+  .reflection .refl-divider {
+    width: 46px; height: 1.5px;
+    background: #ddab9b;
+    margin: 18px auto;
+  }
+
+  /* ───────────── choice message ───────────── */
+  .choice-block {
+    text-align: center;
+    margin-bottom: 44px;
+    padding: 0 10px;
+  }
+  .choice-block .cb-line1 { font-size: 0.95rem; color: var(--ink-soft); }
+  .choice-block .cb-line2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--terra);
+    margin: 8px 0;
+    letter-spacing: 0.08em;
+  }
+  .choice-block .cb-line3 {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    line-height: 2.1;
+    background: var(--cream-deep);
+    border-radius: 14px;
+    display: inline-block;
+    padding: 12px 26px;
+    margin-top: 12px;
+  }
+
+  /* ───────────── value cards ───────────── */
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 44px;
+  }
+  @media (max-width: 560px) { .values-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .value-card {
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 14px 18px;
+    text-align: center;
+  }
+  .value-card .vc-icon {
+    width: 64px; height: 64px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vc-icon.vc-green  { background: #eef4e7; }
+  .vc-icon.vc-orange { background: #fdf0e0; }
+  .vc-icon.vc-blue   { background: #e9f2f5; }
+  .vc-icon.vc-pink   { background: #fbeae8; }
+  .vc-icon.vc-beige  { background: #f5efe3; }
+  .vc-icon.vc-purple { background: #f0ecf5; }
+  .value-card h4 {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--green-deep);
+    margin-bottom: 6px;
+    letter-spacing: 0.1em;
+  }
+  .value-card p {
+    font-size: 0.78rem;
+    line-height: 1.9;
+    color: var(--ink-soft);
+  }
+
+  /* ───────────── about ───────────── */
+  .about {
+    background: var(--sky-pale);
+    border: 1.5px solid #cfe0e7;
+    border-radius: var(--radius);
+    padding: 30px 30px;
+    margin-bottom: 44px;
+  }
+  .about h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #4a7b8e;
+    margin-bottom: 14px;
+    text-align: center;
+    letter-spacing: 0.1em;
+  }
+  .about p {
+    font-size: 0.85rem;
+    line-height: 2.1;
+    color: var(--ink-soft);
+  }
+  .about p + p { margin-top: 10px; }
+
+  /* ───────────── report ───────────── */
+  .report-btn {
+    display: block;
+    margin: 0 auto 60px;
+    background: var(--paper);
+    color: var(--green-deep);
+    border: 1.5px solid var(--green-soft);
+    border-radius: 999px;
+    padding: 13px 44px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: inherit;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .report-btn:hover { background: var(--green-pale); }
+
+  footer {
+    text-align: center;
+    padding: 30px 20px 50px;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em;
+  }
+
+  .fade-section {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .fade-section.shown { opacity: 1; transform: none; }
+
+  /* ───────────── print report ───────────── */
+  #report-page { display: none; }
+
+  @media print {
+    body * { visibility: hidden; }
+    #report-page, #report-page * { visibility: visible; }
+    #report-page {
+      display: block;
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%;
+      background: #fff;
+      padding: 10mm 14mm;
+    }
+    body { background: #fff; }
+  }
+  #report-page { font-size: 10.5pt; color: var(--ink); line-height: 1.9; }
+  #report-page .rp-head {
+    text-align: center;
+    border-bottom: 2px solid var(--green);
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+  }
+  #report-page .rp-head .rp-eyebrow { font-size: 9pt; color: var(--green); letter-spacing: 0.2em; }
+  #report-page .rp-head h1 { font-size: 17pt; color: var(--green-deep); font-weight: 700; margin-top: 2px; }
+  #report-page .rp-meta { text-align: center; font-size: 9pt; color: var(--ink-soft); margin-bottom: 16px; }
+  #report-page h2 {
+    font-size: 11.5pt;
+    color: #fff;
+    background: var(--green);
+    border-radius: 999px;
+    display: inline-block;
+    padding: 2px 18px;
+    margin: 14px 0 8px;
+    font-weight: 700;
+  }
+  #report-page .rp-grid { display: flex; gap: 12px; margin-top: 6px; }
+  #report-page .rp-tile {
+    flex: 1;
+    border: 1.2pt solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+  #report-page .rp-tile .t { font-size: 9pt; color: var(--ink-soft); }
+  #report-page .rp-tile .v { font-size: 13pt; font-weight: 700; color: var(--green-deep); }
+  #report-page .rp-tile .c { font-size: 8.5pt; color: var(--ink-soft); margin-top: 2px; }
+  #report-page .rp-msg {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 10pt;
+    margin-top: 6px;
+  }
+  #report-page .rp-values { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  #report-page .rp-values span {
+    border: 1pt solid var(--green-soft);
+    border-radius: 999px;
+    padding: 1px 12px;
+    font-size: 9pt;
+    color: var(--green-deep);
+  }
+  #report-page .rp-note { font-size: 8pt; color: var(--ink-soft); margin-top: 14px; border-top: 1pt solid var(--line); padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ─────────────── hero ─────────────── -->
+<div class="hero">
+  <div class="leaf-row">
+    <svg width="120" height="26" viewBox="0 0 120 26" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g fill="none" stroke="#a8c49a" stroke-width="1.6" stroke-linecap="round">
+        <path d="M60 22 C60 12 66 6 74 4 C74 14 68 20 60 22 Z"/>
+        <path d="M60 22 C60 12 54 6 46 4 C46 14 52 20 60 22 Z"/>
+        <line x1="20" y1="18" x2="38" y2="18"/>
+        <line x1="82" y1="18" x2="100" y2="18"/>
+        <circle cx="14" cy="18" r="2" fill="#a8c49a" stroke="none"/>
+        <circle cx="106" cy="18" r="2" fill="#a8c49a" stroke="none"/>
+      </g>
+    </svg>
+  </div>
+  <span class="eyebrow">みんなの未来給食</span>
+  <h1>未来シミュレーター</h1>
+  <p class="subtitle">地球にやさしい食は、子どもにもやさしい。<br>月にいちどの未来給食が、どんな未来につながっていくのか。<br>いっしょに、すこし先の未来をのぞいてみませんか。</p>
+  <span class="ribbon">子どもたちに、“選べる未来”を一緒に。</span>
+  <div style="margin-top:14px"><span style="display:inline-block;font-size:0.75rem;color:#8a8270;border:1px dashed #c9bfa5;border-radius:999px;padding:3px 16px;letter-spacing:0.08em;">試作版(開発中)─ 内容は今後変わることがあります</span></div>
+  <div style="margin-top:14px; font-size:0.75rem; color:var(--ink-soft); letter-spacing:0.1em;">─ 試作版・開発中 ─</div>
+</div>
+
+<div class="dots">・・・・・・・・・</div>
+
+<div class="wrap">
+
+  <!-- ─────────────── input steps ─────────────── -->
+  <div class="sec-head">
+    <span class="sec-title"><span class="sec-num">1</span>「<span class="kw">未来</span>」をえがく、じゅんび</span>
+    <div class="sec-dotline"></div>
+    <div class="sec-sub">〜 ふたつの質問にこたえてください 〜</div>
+  </div>
+
+  <div class="card" id="input-card">
+
+    <div class="step-block">
+      <div class="step-label">
+        <span class="step-num">1</span>
+        <span class="step-q">あなたの学校には、何人の子どもたちがいますか？</span>
+      </div>
+      <div class="num-input-row">
+        <input type="number" id="students" value="500" min="1" max="10000">
+        <span class="num-suffix">人の子どもたち</span>
+      </div>
+    </div>
+
+    <div class="step-block">
+      <div class="step-label">
+        <span class="step-num">2</span>
+        <span class="step-q">未来給食を、どれくらい体験してみますか？</span>
+      </div>
+      <div class="pill-row" id="freq-pills">
+        <button class="pill active" data-freq="1">月に1回</button>
+        <button class="pill" data-freq="2">月に2回</button>
+        <button class="pill" data-freq="4">週に1回</button>
+      </div>
+      <div style="height:12px"></div>
+      <div class="pill-row" id="period-pills">
+        <button class="pill" data-period="3">3ヶ月</button>
+        <button class="pill" data-period="6">半年</button>
+        <button class="pill active" data-period="12">1年間</button>
+      </div>
+    </div>
+
+    <button class="go-btn" onclick="peekFuture()">未来をのぞいてみる</button>
+  </div>
+
+  <!-- ─────────────── future scene ─────────────── -->
+  <div id="future-scene">
+    <div class="sec-head">
+      <span class="sec-title terra"><span class="sec-num">2</span>すこし先の、ある日の給食時間</span>
+      <div class="sec-dotline"></div>
+      <div class="sec-sub">〜 こんな風景が、ひろがっているかもしれません 〜</div>
+    </div>
+
+    <div class="scene-frame">
+      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="みんなで同じ給食を囲む教室の風景">
+        <!-- sky -->
+        <rect width="680" height="340" fill="#f2f7ee"/>
+        <!-- sun -->
+        <g class="sun-g">
+          <circle cx="590" cy="64" r="30" fill="#f5d98f"/>
+          <g stroke="#f5d98f" stroke-width="3" stroke-linecap="round">
+            <line x1="590" y1="18" x2="590" y2="8"/>
+            <line x1="590" y1="120" x2="590" y2="110"/>
+            <line x1="544" y1="64" x2="534" y2="64"/>
+            <line x1="646" y1="64" x2="636" y2="64"/>
+            <line x1="558" y1="32" x2="551" y2="25"/>
+            <line x1="629" y1="103" x2="622" y2="96"/>
+            <line x1="558" y1="96" x2="551" y2="103"/>
+            <line x1="629" y1="25" x2="622" y2="32"/>
+          </g>
+        </g>
+        <!-- clouds -->
+        <g class="cloud-g" fill="#ffffff" opacity="0.9">
+          <ellipse cx="120" cy="60" rx="44" ry="16"/>
+          <ellipse cx="152" cy="50" rx="30" ry="13"/>
+        </g>
+        <g class="cloud-g2" fill="#ffffff" opacity="0.75">
+          <ellipse cx="350" cy="40" rx="36" ry="13"/>
+          <ellipse cx="378" cy="32" rx="22" ry="10"/>
+        </g>
+        <!-- hills -->
+        <path d="M0 230 Q 130 168 280 218 T 680 208 V 340 H 0 Z" fill="#d9e6cc"/>
+        <path d="M0 268 Q 200 222 420 258 T 680 250 V 340 H 0 Z" fill="#c4d8b2"/>
+        <!-- school house -->
+        <g>
+          <rect x="60" y="150" width="120" height="78" rx="4" fill="#fffdf7" stroke="#c9bfa5" stroke-width="2"/>
+          <path d="M50 152 L120 112 L190 152 Z" fill="#d9775f" stroke="#c2664f" stroke-width="2" stroke-linejoin="round"/>
+          <rect x="106" y="186" width="28" height="42" rx="2" fill="#e8dfca"/>
+          <rect x="74" y="166" width="20" height="16" rx="2" fill="#dceaf0"/>
+          <rect x="146" y="166" width="20" height="16" rx="2" fill="#dceaf0"/>
+          <circle cx="120" cy="138" r="9" fill="#fffdf7" stroke="#c9bfa5" stroke-width="2"/>
+          <line x1="120" y1="138" x2="120" y2="132" stroke="#c9bfa5" stroke-width="2" stroke-linecap="round"/>
+          <line x1="120" y1="138" x2="125" y2="140" stroke="#c9bfa5" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <!-- trees -->
+        <g>
+          <rect x="232" y="196" width="8" height="26" rx="3" fill="#a98e6f"/>
+          <circle cx="236" cy="180" r="24" fill="#8fb27c"/>
+          <circle cx="222" cy="192" r="16" fill="#9dbd8b"/>
+          <circle cx="251" cy="191" r="15" fill="#9dbd8b"/>
+        </g>
+        <g>
+          <rect x="624" y="208" width="7" height="22" rx="3" fill="#a98e6f"/>
+          <circle cx="628" cy="194" r="20" fill="#8fb27c"/>
+          <circle cx="616" cy="204" r="13" fill="#9dbd8b"/>
+        </g>
+        <!-- garden patch -->
+        <g>
+          <ellipse cx="560" cy="248" rx="58" ry="14" fill="#cbb79b" opacity="0.7"/>
+          <g stroke="#5e8c52" stroke-width="2.4" stroke-linecap="round" fill="none">
+            <path d="M535 246 C535 238 530 234 525 232 M535 246 C535 238 540 234 545 232"/>
+            <path d="M562 248 C562 239 557 235 552 233 M562 248 C562 239 567 235 572 233"/>
+            <path d="M589 246 C589 238 584 234 579 232 M589 246 C589 238 594 234 599 232"/>
+          </g>
+        </g>
+        <!-- big table with children -->
+        <g>
+          <!-- table -->
+          <rect x="250" y="262" width="220" height="14" rx="7" fill="#cfa97e"/>
+          <rect x="262" y="276" width="10" height="28" rx="3" fill="#bb946a"/>
+          <rect x="448" y="276" width="10" height="28" rx="3" fill="#bb946a"/>
+          <!-- bowls with steam -->
+          <g>
+            <path d="M286 262 a14 9 0 0 0 28 0 Z" fill="#fffdf7" stroke="#c9bfa5" stroke-width="1.6"/>
+            <path class="steam" d="M300 252 q3 -4 0 -8" stroke="#bcd0d8" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </g>
+          <g>
+            <path d="M346 262 a14 9 0 0 0 28 0 Z" fill="#fffdf7" stroke="#c9bfa5" stroke-width="1.6"/>
+            <path class="steam s2" d="M360 252 q-3 -4 0 -8" stroke="#bcd0d8" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </g>
+          <g>
+            <path d="M406 262 a14 9 0 0 0 28 0 Z" fill="#fffdf7" stroke="#c9bfa5" stroke-width="1.6"/>
+            <path class="steam s3" d="M420 252 q3 -4 0 -8" stroke="#bcd0d8" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </g>
+          <!-- children (simple, diverse) -->
+          <g>
+            <circle cx="280" cy="296" r="16" fill="#f6dcc4"/>
+            <path d="M264 294 a16 16 0 0 1 32 0 L296 288 Q280 274 264 288 Z" fill="#6b4f3a"/>
+            <rect x="264" y="312" width="32" height="22" rx="10" fill="#d9775f"/>
+          </g>
+          <g>
+            <circle cx="340" cy="298" r="16" fill="#eac3a2"/>
+            <path d="M324 296 a16 16 0 0 1 32 0 L356 286 Q340 276 324 286 Z" fill="#2f2a26"/>
+            <rect x="324" y="314" width="32" height="22" rx="10" fill="#7da7b5"/>
+          </g>
+          <g>
+            <circle cx="400" cy="296" r="16" fill="#f6dcc4"/>
+            <path d="M384 294 a16 16 0 0 1 32 0 L416 290 Q400 272 384 290 Z" fill="#8c5b3c"/>
+            <rect x="384" y="312" width="32" height="22" rx="10" fill="#8fb27c"/>
+          </g>
+          <g>
+            <circle cx="458" cy="298" r="16" fill="#dfb288"/>
+            <path d="M442 296 a16 16 0 0 1 32 0 L474 288 Q458 274 442 288 Z" fill="#4a3526"/>
+            <rect x="442" y="314" width="32" height="22" rx="10" fill="#e8c46a"/>
+          </g>
+          <!-- smiles -->
+          <g stroke="#7a5c44" stroke-width="1.8" fill="none" stroke-linecap="round">
+            <path d="M274 300 q6 5 12 0"/>
+            <path d="M334 302 q6 5 12 0"/>
+            <path d="M394 300 q6 5 12 0"/>
+            <path d="M452 302 q6 5 12 0"/>
+          </g>
+          <g fill="#5b4632">
+            <circle cx="274" cy="293" r="1.8"/><circle cx="286" cy="293" r="1.8"/>
+            <circle cx="334" cy="295" r="1.8"/><circle cx="346" cy="295" r="1.8"/>
+            <circle cx="394" cy="293" r="1.8"/><circle cx="406" cy="293" r="1.8"/>
+            <circle cx="452" cy="295" r="1.8"/><circle cx="464" cy="295" r="1.8"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="scene-story">
+      <p id="story-1">その日は、アレルギーのある子も、宗教や文化のちがいがある子も、<br>みんなが安心して食べられるメニューを「選べる」日です。</p>
+      <p id="story-2">地域の野菜やお豆腐をつかった、あたたかい給食。<br>同じ食卓で「おいしいね」と笑顔がならびます。</p>
+      <p id="story-3">そしてこの一食は、子どもたちが大人になる未来の地球にも、<br>小さな贈りものを残しています。</p>
+    </div>
+
+    <button class="scene-more" id="scene-more-btn" onclick="showResults()">その贈りものを、くわしく見てみる</button>
+  </div>
+
+  <!-- ─────────────── results ─────────────── -->
+  <div id="results">
+
+    <div class="dots" style="margin-top:44px">・・・・・・・・・</div>
+
+    <div class="sec-head fade-section">
+      <span class="sec-title"><span class="sec-num">3</span>未来にのこせる、<span class="kw">みっつの贈りもの</span></span>
+      <div class="sec-dotline"></div>
+      <div class="sec-sub" id="results-condition">〜 〜</div>
+    </div>
+
+    <!-- water -->
+    <div class="impact-card water fade-section">
+      <div class="ic-icon">
+        <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
+          <path d="M26 6 C26 6 12 22 12 32 a14 14 0 0 0 28 0 C40 22 26 6 26 6 Z" fill="none" stroke="#7da7b5" stroke-width="2.4" stroke-linejoin="round"/>
+          <path d="M20 32 a6 7 0 0 0 5 7" fill="none" stroke="#a9c8d4" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>未来へつながる水資源</h3>
+      <p class="impact-lead" id="water-lead">—</p>
+      <div class="impact-numline" id="water-num">—</div>
+      <div class="compare-row" id="water-compare"></div>
+    </div>
+
+    <!-- land -->
+    <div class="impact-card land fade-section">
+      <div class="ic-icon">
+        <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
+          <ellipse cx="26" cy="40" rx="18" ry="5" fill="none" stroke="#b59a7c" stroke-width="2.2"/>
+          <path d="M26 38 V20" stroke="#8c7158" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M26 26 C26 18 20 14 14 12 C14 20 19 25 26 26 Z" fill="none" stroke="#5e8c52" stroke-width="2.2" stroke-linejoin="round"/>
+          <path d="M26 20 C26 13 31 9 38 8 C38 15 33 19 26 20 Z" fill="none" stroke="#5e8c52" stroke-width="2.2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3>のびのびと育つ大地</h3>
+      <p class="impact-lead" id="land-lead">—</p>
+      <div class="impact-numline" id="land-num">—</div>
+      <div class="compare-row" id="land-compare"></div>
+    </div>
+
+    <!-- co2 -->
+    <div class="impact-card co2 fade-section">
+      <div class="ic-icon">
+        <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
+          <path d="M26 44 V26" stroke="#8c7158" stroke-width="2.4" stroke-linecap="round"/>
+          <circle cx="26" cy="20" r="11" fill="none" stroke="#5e8c52" stroke-width="2.4"/>
+          <circle cx="17" cy="27" r="7" fill="none" stroke="#8fb27c" stroke-width="2.2"/>
+          <circle cx="35" cy="27" r="7" fill="none" stroke="#8fb27c" stroke-width="2.2"/>
+          <path d="M18 44 h16" stroke="#b59a7c" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>すんだ空気と、おだやかな気候</h3>
+      <p class="impact-lead" id="co2-lead">—</p>
+      <div class="impact-numline" id="co2-num">—</div>
+      <div class="compare-row" id="co2-compare"></div>
+    </div>
+
+    <!-- reflection -->
+    <div class="reflection fade-section">
+      <p>未来は、特別な誰かがつくるものではありません。</p>
+      <div class="refl-divider"></div>
+      <p>毎日の給食の時間も、<br>未来につながる学びの時間になります。</p>
+      <div class="refl-divider"></div>
+      <p>選べることは、<br>誰かを思いやることにもつながります。</p>
+      <div class="refl-divider"></div>
+      <p>みんなが安心して食べられる未来について、<br>考えるきっかけになりますように。</p>
+    </div>
+
+    <!-- choice message -->
+    <div class="choice-block fade-section">
+      <div class="cb-line1">私たちが目指しているのは、「全員が同じ食事を選ぶこと」ではありません。</div>
+      <div class="cb-line2">目指しているのは、「選べること」です。</div>
+      <div class="cb-line3">食べるかどうかは、子どもや家庭が選べる。そんな未来です。<br>植物性メニューは、ゴールではなく、子どもたちの選択肢を広げるための一つの方法です。</div>
+    </div>
+
+    <!-- values -->
+    <div class="sec-head fade-section">
+      <span class="sec-title sky"><span class="sec-num">4</span>未来給食が育てる、むっつの芽</span>
+      <div class="sec-dotline"></div>
+      <div class="sec-sub">〜 環境だけではない、たいせつな価値 〜</div>
+    </div>
+
+    <div class="values-grid fade-section">
+      <div class="value-card">
+        <div class="vc-icon vc-green">
+          <svg width="36" height="36" viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M20 33 C12 27 6 22 6 15 a7 7 0 0 1 14 -2 a7 7 0 0 1 14 2 c0 7 -6 12 -14 18 Z" fill="none" stroke="#5e8c52" stroke-width="2.4" stroke-linejoin="round"/>
+            <path d="M20 14 C20 10 23 8 26 7" fill="none" stroke="#8fb27c" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>健康</h4>
+        <p>野菜・豆・穀物を中心とした、心と体にやさしい一食。</p>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon vc-orange">
+          <svg width="36" height="36" viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="13" cy="14" r="5" fill="none" stroke="#dd9a4e" stroke-width="2.4"/>
+            <circle cx="27" cy="14" r="5" fill="none" stroke="#d9775f" stroke-width="2.4"/>
+            <path d="M5 32 a8 8 0 0 1 16 0" fill="none" stroke="#dd9a4e" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M19 32 a8 8 0 0 1 16 0" fill="none" stroke="#d9775f" stroke-width="2.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>多様性</h4>
+        <p>アレルギー・宗教・価値観など、様々な背景への対応につながる。</p>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon vc-blue">
+          <svg width="36" height="36" viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="20" r="13" fill="none" stroke="#5d8fa3" stroke-width="2.4"/>
+            <path d="M9 16 q6 3 9 9 M20 7 q-2 8 3 13 q5 4 10 3" fill="none" stroke="#8fb27c" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>環境</h4>
+        <p>水・大地・空気。未来の地球に、すこしずつ資源をのこす。</p>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon vc-pink">
+          <svg width="36" height="36" viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M12 20 C8 16 8 11 12 9 C15 7 19 9 20 12 C21 9 25 7 28 9 C32 11 32 16 28 20 L20 28 Z" fill="none" stroke="#d9775f" stroke-width="2.4" stroke-linejoin="round"/>
+            <path d="M10 33 q10 4 20 0" stroke="#e8a795" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>思いやり</h4>
+        <p>「選べること」は、だれかを思いやることにつながります。</p>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon vc-beige">
+          <svg width="36" height="36" viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M7 22 a13 8 0 0 0 26 0 Z" fill="none" stroke="#8c7158" stroke-width="2.4" stroke-linejoin="round"/>
+            <path d="M13 17 q3 -3 7 -2 q4 -2 7 2" fill="none" stroke="#b59a7c" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="28" y1="8" x2="22" y2="16" stroke="#8c7158" stroke-width="2.4" stroke-linecap="round"/>
+            <line x1="33" y1="11" x2="26" y2="17" stroke="#8c7158" stroke-width="2.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>日本の食文化</h4>
+        <p>精進料理から続く、自然の恵みに感謝する食の知恵を学ぶ。</p>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon vc-purple">
+          <svg width="36" height="36" viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M20 10 C16 7 11 7 7 9 V 30 C11 28 16 28 20 31 C24 28 29 28 33 30 V 9 C29 7 24 7 20 10 Z" fill="none" stroke="#8a7aa8" stroke-width="2.4" stroke-linejoin="round"/>
+            <line x1="20" y1="10" x2="20" y2="31" stroke="#8a7aa8" stroke-width="2.2"/>
+          </svg>
+        </div>
+        <h4>食育</h4>
+        <p>食の選択肢や世界の多様性を学ぶきっかけになります。</p>
+      </div>
+    </div>
+
+    <!-- about -->
+    <div class="about fade-section">
+      <h3>このシミュレーターについて</h3>
+      <p>ここに表示される数値は、公表されている環境研究(食品ごとの水使用量・温室効果ガス排出量・土地利用に関する国際的な研究データ)をもとにした概算です。</p>
+      <p>実際の効果は、献立の内容、食材の産地、地域の給食事情によって変わります。正確な予測ではなく、「およそこのくらいの規模」を実感していただくための教育用の目安としてご活用ください。</p>
+      <p>シミュレーションの前提:植物性中心の給食1食あたり、水 約200リットル・温室効果ガス 約0.8kg・土地 約15㎡の節約と仮定しています。</p>
+    </div>
+
+    <!-- report -->
+    <button class="report-btn fade-section" onclick="printReport()">学校レポートとして印刷・保存する</button>
+
+  </div><!-- #results -->
+
+</div><!-- .wrap -->
+
+<footer>
+  給食は、未来をつくる。<br>
+  みんなの未来給食 ─ 誰も取り残さない給食の未来を目指して ─
+</footer>
+
+<!-- ─────────────── print report ─────────────── -->
+<div id="report-page">
+  <div class="rp-head">
+    <div class="rp-eyebrow">みんなの未来給食 未来シミュレーター</div>
+    <h1>未来給食 学校レポート</h1>
+  </div>
+  <div class="rp-meta" id="rp-meta">—</div>
+
+  <h2>みんなの未来給食とは</h2>
+  <p>健康・多様性・環境・思いやりを大切にしながら、誰もが安心して食べられる給食を目指す取り組みです。目指しているのは「全員が同じ食事を選ぶこと」ではなく、「選べること」。月にいちどの植物性中心の献立は、アレルギー・宗教・家庭の方針にかかわらず、みんなが同じ食卓を囲める日をつくり、食育・多様性教育の教材としても活用できます。</p>
+
+  <h2>未来にのこせる資源(概算)</h2>
+  <div class="rp-grid">
+    <div class="rp-tile">
+      <div class="t">水資源</div>
+      <div class="v" id="rp-water">—</div>
+      <div class="c" id="rp-water-c">—</div>
+    </div>
+    <div class="rp-tile">
+      <div class="t">大地</div>
+      <div class="v" id="rp-land">—</div>
+      <div class="c" id="rp-land-c">—</div>
+    </div>
+    <div class="rp-tile">
+      <div class="t">温室効果ガス</div>
+      <div class="v" id="rp-co2">—</div>
+      <div class="c" id="rp-co2-c">—</div>
+    </div>
+  </div>
+
+  <h2>子どもたちへのメッセージ</h2>
+  <div class="rp-msg" id="rp-msg">—</div>
+
+  <h2>未来給食が育てる価値</h2>
+  <div class="rp-values">
+    <span>健康</span><span>多様性</span><span>環境</span><span>思いやり</span><span>日本の食文化</span><span>食育</span>
+  </div>
+
+  <p class="rp-note">本レポートの数値は、公表されている環境研究をもとにした教育用の概算です(1食あたり 水約200L・温室効果ガス約0.8kg・土地約15㎡の節約と仮定)。実際の効果は献立や地域によって異なります。</p>
+</div>
+
+<script>
+// ── Calculation constants (unchanged from v1) ──────────────
+const WATER_PER_MEAL = 200;   // L per student per meal
+const CO2_PER_MEAL   = 0.8;   // kg CO2e per student per meal
+const LAND_PER_MEAL  = 15;    // m2 per student per meal
+
+// School-centred comparison units
+const POOL_L        = 300000; // school pool
+const BATH_L        = 200;    // home bathtub
+const BOTTLE_L      = 0.5;
+const SCHOOLYARD_M2 = 4000;
+const CLASSROOM_M2  = 64;
+const PARK_M2       = 2500;   // neighbourhood park
+const TREE_KG_YR    = 8;
+const HOME_KG_DAY   = 1.5;
+
+let state = { students: 500, freq: 1, period: 12 };
+let results = null;
+
+// ── Formatting ─────────────────────────────────────────────
+function fmt(n) {
+  if (n >= 1e8) return (n / 1e8).toFixed(1) + '億';
+  if (n >= 1e4) {
+    const man = n / 1e4;
+    return (man >= 100 ? Math.round(man) : Math.round(man * 10) / 10) + '万';
+  }
+  return Math.round(n).toLocaleString('ja-JP');
+}
+function fmtSoft(n) {
+  if (n >= 100) return Math.round(n).toLocaleString('ja-JP');
+  if (n >= 10)  return String(Math.round(n));
+  if (n >= 1)   return String(Math.round(n * 10) / 10);
+  return String(Math.round(n * 100) / 100);
+}
+
+// ── Pill selection ─────────────────────────────────────────
+document.querySelectorAll('#freq-pills .pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('#freq-pills .pill').forEach(q => q.classList.remove('active'));
+    p.classList.add('active');
+    state.freq = parseInt(p.dataset.freq);
+  });
+});
+document.querySelectorAll('#period-pills .pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('#period-pills .pill').forEach(q => q.classList.remove('active'));
+    p.classList.add('active');
+    state.period = parseInt(p.dataset.period);
+  });
+});
+
+// ── Step 3: peek into the future ───────────────────────────
+function peekFuture() {
+  state.students = parseInt(document.getElementById('students').value) || 500;
+  const meals = state.students * state.freq * state.period;
+  results = {
+    meals,
+    water: meals * WATER_PER_MEAL,
+    co2:   meals * CO2_PER_MEAL,
+    land:  meals * LAND_PER_MEAL
+  };
+
+  // reset & show the scene
+  const scene = document.getElementById('future-scene');
+  document.getElementById('results').style.display = 'none';
+  document.querySelectorAll('.fade-section').forEach(el => el.classList.remove('shown'));
+  ['story-1','story-2','story-3'].forEach(id => document.getElementById(id).classList.remove('shown'));
+  document.getElementById('scene-more-btn').classList.remove('shown');
+
+  scene.style.display = 'block';
+  scene.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // story lines appear one by one
+  setTimeout(() => document.getElementById('story-1').classList.add('shown'), 900);
+  setTimeout(() => document.getElementById('story-2').classList.add('shown'), 2600);
+  setTimeout(() => document.getElementById('story-3').classList.add('shown'), 4300);
+  setTimeout(() => document.getElementById('scene-more-btn').classList.add('shown'), 5600);
+}
+
+// ── Step 4: results ────────────────────────────────────────
+function chip(label, value) {
+  return `<span class="compare-chip">${label} <b>${value}</b></span>`;
+}
+
+function periodLabel() {
+  return state.period === 12 ? '1年間' : state.period === 6 ? '半年' : '3ヶ月';
+}
+function freqLabel() {
+  return state.freq === 1 ? '月に1回' : state.freq === 2 ? '月に2回' : '週に1回';
+}
+
+function showResults() {
+  const r = results;
+  if (!r) return;
+
+  document.getElementById('results-condition').textContent =
+    `〜 ${state.students.toLocaleString()}人の子どもたちと、${freqLabel()}・${periodLabel()}の未来給食 〜`;
+
+  // water — lead with meaning
+  const pools = r.water / POOL_L;
+  document.getElementById('water-lead').innerHTML =
+    `学校のプール<strong>約${fmtSoft(pools)}杯分</strong>にあたる水を、<br>未来へつなぐことができます。`;
+  document.getElementById('water-num').innerHTML = `水資源の節約 <b>約${fmt(r.water)}リットル</b>`;
+  document.getElementById('water-compare').innerHTML =
+    chip('おうちのお風呂', `約${fmt(r.water / BATH_L)}杯分`) +
+    chip('500mlペットボトル', `約${fmt(r.water / BOTTLE_L)}本分`);
+
+  // land
+  const yards = r.land / SCHOOLYARD_M2;
+  document.getElementById('land-lead').innerHTML =
+    `学校の校庭<strong>約${fmtSoft(yards)}個分</strong>の大地を、<br>森や自然のままにしておくことができます。`;
+  document.getElementById('land-num').innerHTML = `土地の節約 <b>約${fmt(r.land)}㎡</b>`;
+  document.getElementById('land-compare').innerHTML =
+    chip('教室', `約${fmt(r.land / CLASSROOM_M2)}室分`) +
+    chip('近所の公園', `約${fmtSoft(r.land / PARK_M2)}個分`);
+
+  // co2
+  const trees = r.co2 / TREE_KG_YR;
+  document.getElementById('co2-lead').innerHTML =
+    `木<strong>約${fmt(trees)}本</strong>が1年間かけて吸収する量の<br>温室効果ガスを、減らすことができます。`;
+  document.getElementById('co2-num').innerHTML = `温室効果ガスの削減 <b>約${fmt(r.co2)}kg</b>`;
+  document.getElementById('co2-compare').innerHTML =
+    chip('家庭の電気の使用', `約${fmt(r.co2 / HOME_KG_DAY)}日分`);
+
+  // reveal
+  const res = document.getElementById('results');
+  res.style.display = 'block';
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // staggered fade-in
+  const sections = res.querySelectorAll('.fade-section');
+  sections.forEach((el, i) => setTimeout(() => el.classList.add('shown'), 400 + i * 350));
+
+  buildReport();
+}
+
+// ── School report ──────────────────────────────────────────
+function buildReport() {
+  const r = results;
+  const today = new Date();
+  const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+
+  document.getElementById('rp-meta').textContent =
+    `作成日: ${dateStr} ／ 条件: ${state.students.toLocaleString()}人 × ${freqLabel()} × ${periodLabel()}`;
+
+  document.getElementById('rp-water').textContent  = `約${fmt(r.water)} L`;
+  document.getElementById('rp-water-c').textContent = `学校のプール約${fmtSoft(r.water / POOL_L)}杯分`;
+  document.getElementById('rp-land').textContent   = `約${fmt(r.land)} ㎡`;
+  document.getElementById('rp-land-c').textContent  = `校庭約${fmtSoft(r.land / SCHOOLYARD_M2)}個分`;
+  document.getElementById('rp-co2').textContent    = `約${fmt(r.co2)} kg`;
+  document.getElementById('rp-co2-c').textContent   = `木約${fmt(r.co2 / TREE_KG_YR)}本の年間吸収量`;
+
+  document.getElementById('rp-msg').textContent =
+    `${state.students.toLocaleString()}人の子どもたちが通う学校で${freqLabel()}未来給食を選ぶと、` +
+    `${periodLabel()}で約${fmt(r.water)}リットルの水を未来へつなぐことができます。` +
+    `これは学校のプール約${fmtSoft(r.water / POOL_L)}杯分にあたります。` +
+    `子どもたちが大人になる未来へ、より多くの資源を残すための小さな一歩になります。`;
+}
+
+function printReport() {
+  if (!results) return;
+  window.print();
+}
+</script>
+</body>
+</html>
