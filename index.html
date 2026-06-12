@@ -40,7 +40,8 @@
 
   body {
     font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'Hiragino Sans', 'Yu Gothic', sans-serif;
-    background: var(--cream);
+    background: linear-gradient(180deg, #f0f6f2 0%, #f6f6e9 18%, var(--cream) 42%);
+    background-attachment: fixed;
     color: var(--ink);
     line-height: 1.8;
     font-weight: 500;
@@ -298,11 +299,29 @@
     background: var(--paper);
     border: 1.5px solid var(--line);
     border-radius: var(--radius);
-    padding: 32px 30px;
+    padding: 0 30px 32px;
     margin-bottom: 24px;
     text-align: center;
+    overflow: hidden;
   }
-  @media (max-width: 480px) { .impact-card { padding: 26px 18px; } }
+  @media (max-width: 480px) { .impact-card { padding: 0 18px 26px; } }
+  .ic-scene { margin: 0 -30px 20px; }
+  @media (max-width: 480px) { .ic-scene { margin: 0 -18px 16px; } }
+  .ic-scene svg { display: block; width: 100%; height: auto; }
+
+  /* ── scroll-growing tree (C) ── */
+  #grow-tree {
+    position: fixed;
+    right: 14px;
+    bottom: 14px;
+    width: 52px;
+    opacity: 0.9;
+    pointer-events: none;
+    z-index: 50;
+  }
+  #grow-tree g { opacity: 0; transition: opacity 0.8s ease; }
+  #grow-tree g.on { opacity: 1; }
+  @media print { #grow-tree { display: none; } }
 
   .impact-card .ic-icon { margin-bottom: 12px; }
   .impact-card h3 {
@@ -866,10 +885,36 @@
 
     <!-- water -->
     <div class="impact-card water fade-section">
-      <div class="ic-icon">
-        <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
-          <path d="M26 6 C26 6 12 22 12 32 a14 14 0 0 0 28 0 C40 22 26 6 26 6 Z" fill="none" stroke="#7da7b5" stroke-width="2.4" stroke-linejoin="round"/>
-          <path d="M20 32 a6 7 0 0 0 5 7" fill="none" stroke="#a9c8d4" stroke-width="2.2" stroke-linecap="round"/>
+      <div class="ic-scene">
+        <svg viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="きれいな川で遊ぶ子どもたちと魚">
+          <rect width="680" height="150" fill="#eef5f7"/>
+          <path d="M0 70 Q 170 40 340 64 T 680 58 V 150 H 0 Z" fill="#d9e6cc"/>
+          <path d="M0 96 Q 120 80 250 92 C 380 104 420 78 540 88 Q 620 94 680 86 V 150 H 0 Z" fill="#bcd8e0"/>
+          <path d="M40 116 q 40 -8 90 0 M 200 124 q 50 -10 100 0 M 420 118 q 45 -8 90 0" stroke="#fffdf7" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.7"/>
+          <!-- fish -->
+          <g fill="#7da7b5">
+            <path d="M300 112 q 10 -7 20 0 q -10 7 -20 0 Z"/>
+            <path d="M322 110 l 7 -5 v 10 Z"/>
+          </g>
+          <!-- bird -->
+          <g stroke="#8a8270" stroke-width="2.4" fill="none" stroke-linecap="round">
+            <path d="M560 34 q 7 -7 14 0 M 574 34 q 7 -7 14 0"/>
+          </g>
+          <!-- children by the bank -->
+          <g>
+            <circle cx="120" cy="74" r="11" fill="#f6dcc4"/>
+            <path d="M109 72 a11 11 0 0 1 22 0 L131 68 Q120 58 109 68 Z" fill="#6b4f3a"/>
+            <rect x="109" y="85" width="22" height="16" rx="7" fill="#d9775f"/>
+            <circle cx="116" cy="73" r="1.4" fill="#5b4632"/><circle cx="124" cy="73" r="1.4" fill="#5b4632"/>
+            <path d="M116 78 q4 3 8 0" stroke="#7a5c44" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </g>
+          <g>
+            <circle cx="158" cy="78" r="11" fill="#eac3a2"/>
+            <path d="M147 76 a11 11 0 0 1 22 0 L169 70 Q158 62 147 70 Z" fill="#2f2a26"/>
+            <rect x="147" y="89" width="22" height="16" rx="7" fill="#7da7b5"/>
+            <circle cx="154" cy="77" r="1.4" fill="#5b4632"/><circle cx="162" cy="77" r="1.4" fill="#5b4632"/>
+            <path d="M154 82 q4 3 8 0" stroke="#7a5c44" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </g>
         </svg>
       </div>
       <h3>未来へつながる水資源</h3>
@@ -880,12 +925,43 @@
 
     <!-- land -->
     <div class="impact-card land fade-section">
-      <div class="ic-icon">
-        <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
-          <ellipse cx="26" cy="40" rx="18" ry="5" fill="none" stroke="#b59a7c" stroke-width="2.2"/>
-          <path d="M26 38 V20" stroke="#8c7158" stroke-width="2.4" stroke-linecap="round"/>
-          <path d="M26 26 C26 18 20 14 14 12 C14 20 19 25 26 26 Z" fill="none" stroke="#5e8c52" stroke-width="2.2" stroke-linejoin="round"/>
-          <path d="M26 20 C26 13 31 9 38 8 C38 15 33 19 26 20 Z" fill="none" stroke="#5e8c52" stroke-width="2.2" stroke-linejoin="round"/>
+      <div class="ic-scene">
+        <svg viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="森と畑とうさぎのいる大地">
+          <rect width="680" height="150" fill="#f2f6ec"/>
+          <path d="M0 78 Q 170 50 340 70 T 680 64 V 150 H 0 Z" fill="#cfe0bd"/>
+          <!-- forest -->
+          <g>
+            <rect x="84" y="64" width="6" height="18" rx="2" fill="#a98e6f"/>
+            <circle cx="87" cy="52" r="17" fill="#8fb27c"/>
+            <circle cx="76" cy="61" r="11" fill="#9dbd8b"/>
+            <rect x="134" y="58" width="6" height="20" rx="2" fill="#a98e6f"/>
+            <circle cx="137" cy="46" r="18" fill="#7ba368"/>
+            <circle cx="149" cy="56" r="11" fill="#8fb27c"/>
+            <rect x="186" y="66" width="5" height="15" rx="2" fill="#a98e6f"/>
+            <circle cx="188" cy="56" r="13" fill="#9dbd8b"/>
+          </g>
+          <!-- field rows -->
+          <g stroke="#5e8c52" stroke-width="2.6" fill="none" stroke-linecap="round">
+            <path d="M420 112 C420 104 415 100 410 98 M420 112 C420 104 425 100 430 98"/>
+            <path d="M462 110 C462 102 457 98 452 96 M462 110 C462 102 467 98 472 96"/>
+            <path d="M504 112 C504 104 499 100 494 98 M504 112 C504 104 509 100 514 98"/>
+            <path d="M546 110 C546 102 541 98 536 96 M546 110 C546 102 551 98 556 96"/>
+          </g>
+          <ellipse cx="488" cy="118" rx="110" ry="9" fill="#cbb79b" opacity="0.5"/>
+          <!-- rabbit -->
+          <g fill="#fffdf7" stroke="#c9bfa5" stroke-width="1.8">
+            <ellipse cx="300" cy="106" rx="15" ry="11"/>
+            <circle cx="316" cy="98" r="8"/>
+            <path d="M313 92 q -2 -10 1 -13 q 4 4 3 13 M 319 92 q 0 -10 4 -12 q 3 5 0 13" fill="#fffdf7"/>
+          </g>
+          <circle cx="318" cy="97" r="1.3" fill="#5b4632"/>
+          <circle cx="288" cy="104" r="4" fill="#fffdf7" stroke="#c9bfa5" stroke-width="1.5"/>
+          <!-- bird on tree -->
+          <g>
+            <ellipse cx="137" cy="30" rx="6" ry="5" fill="#d9775f"/>
+            <circle cx="143" cy="27" r="3.4" fill="#d9775f"/>
+            <path d="M146 27 l 4 1.4 l -4 1.4 Z" fill="#dd9a4e"/>
+          </g>
         </svg>
       </div>
       <h3>のびのびと育つ大地</h3>
@@ -896,13 +972,43 @@
 
     <!-- co2 -->
     <div class="impact-card co2 fade-section">
-      <div class="ic-icon">
-        <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
-          <path d="M26 44 V26" stroke="#8c7158" stroke-width="2.4" stroke-linecap="round"/>
-          <circle cx="26" cy="20" r="11" fill="none" stroke="#5e8c52" stroke-width="2.4"/>
-          <circle cx="17" cy="27" r="7" fill="none" stroke="#8fb27c" stroke-width="2.2"/>
-          <circle cx="35" cy="27" r="7" fill="none" stroke="#8fb27c" stroke-width="2.2"/>
-          <path d="M18 44 h16" stroke="#b59a7c" stroke-width="2.2" stroke-linecap="round"/>
+      <div class="ic-scene">
+        <svg viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="青い空の下で深呼吸する子どもと大きな木">
+          <rect width="680" height="150" fill="#edf4f6"/>
+          <g fill="#ffffff" opacity="0.9">
+            <ellipse cx="150" cy="36" rx="36" ry="12"/>
+            <ellipse cx="176" cy="28" rx="22" ry="9"/>
+            <ellipse cx="500" cy="26" rx="30" ry="10"/>
+          </g>
+          <path d="M0 104 Q 200 84 400 98 T 680 92 V 150 H 0 Z" fill="#d9e6cc"/>
+          <!-- big tree -->
+          <g>
+            <rect x="446" y="74" width="10" height="38" rx="4" fill="#a98e6f"/>
+            <circle cx="451" cy="56" r="30" fill="#8fb27c"/>
+            <circle cx="430" cy="70" r="18" fill="#9dbd8b"/>
+            <circle cx="472" cy="68" r="17" fill="#9dbd8b"/>
+          </g>
+          <!-- child, arms up -->
+          <g>
+            <circle cx="250" cy="84" r="12" fill="#f6dcc4"/>
+            <path d="M238 82 a12 12 0 0 1 24 0 L262 76 Q250 66 238 76 Z" fill="#8c5b3c"/>
+            <rect x="239" y="96" width="22" height="18" rx="8" fill="#8fb27c"/>
+            <path d="M239 100 q -8 -6 -10 -12 M 261 100 q 8 -6 10 -12" stroke="#f6dcc4" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+            <circle cx="246" cy="83" r="1.5" fill="#5b4632"/><circle cx="254" cy="83" r="1.5" fill="#5b4632"/>
+            <path d="M246 88 q4 3.5 8 0" stroke="#7a5c44" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          </g>
+          <!-- butterflies -->
+          <g fill="#dd9a4e" opacity="0.85">
+            <path d="M330 50 q -6 -7 -10 -2 q 4 6 10 2 Z M330 50 q 6 -7 10 -2 q -4 6 -10 2 Z"/>
+          </g>
+          <g fill="#d9775f" opacity="0.75">
+            <path d="M370 70 q -5 -6 -8 -2 q 3 5 8 2 Z M370 70 q 5 -6 8 -2 q -3 5 -8 2 Z"/>
+          </g>
+          <!-- birds -->
+          <g stroke="#8a8270" stroke-width="2.2" fill="none" stroke-linecap="round">
+            <path d="M80 28 q 6 -6 12 0 M 92 28 q 6 -6 12 0"/>
+            <path d="M600 44 q 5 -5 10 0 M 610 44 q 5 -5 10 0"/>
+          </g>
         </svg>
       </div>
       <h3>すんだ空気と、おだやかな気候</h3>
@@ -1062,6 +1168,49 @@
   </div><!-- #results -->
 
 </div><!-- .wrap -->
+
+<!-- scroll-growing tree -->
+<svg id="grow-tree" viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- stage 1: sprout -->
+  <g id="gt-1" class="on">
+    <ellipse cx="30" cy="72" rx="14" ry="4" fill="#cbb79b" opacity="0.6"/>
+    <path d="M30 70 V58" stroke="#5e8c52" stroke-width="3" stroke-linecap="round"/>
+    <path d="M30 60 C30 52 24 48 18 47 C18 54 23 59 30 60 Z" fill="#8fb27c"/>
+    <path d="M30 56 C30 49 35 46 42 45 C42 52 37 56 30 56 Z" fill="#9dbd8b"/>
+  </g>
+  <!-- stage 2: sapling -->
+  <g id="gt-2">
+    <ellipse cx="30" cy="72" rx="15" ry="4" fill="#cbb79b" opacity="0.6"/>
+    <path d="M30 70 V40" stroke="#a98e6f" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="30" cy="32" r="14" fill="#8fb27c"/>
+    <circle cx="21" cy="40" r="8" fill="#9dbd8b"/>
+    <circle cx="39" cy="40" r="8" fill="#9dbd8b"/>
+  </g>
+  <!-- stage 3: tree with fruit -->
+  <g id="gt-3">
+    <ellipse cx="30" cy="72" rx="16" ry="4" fill="#cbb79b" opacity="0.6"/>
+    <path d="M30 70 V34" stroke="#a98e6f" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="30" cy="26" r="17" fill="#7ba368"/>
+    <circle cx="18" cy="36" r="10" fill="#8fb27c"/>
+    <circle cx="42" cy="36" r="10" fill="#8fb27c"/>
+    <circle cx="24" cy="24" r="3" fill="#d9775f"/>
+    <circle cx="37" cy="30" r="3" fill="#d9775f"/>
+    <circle cx="31" cy="38" r="3" fill="#d9775f"/>
+  </g>
+  <!-- stage 4: tree with bird -->
+  <g id="gt-4">
+    <ellipse cx="30" cy="72" rx="16" ry="4" fill="#cbb79b" opacity="0.6"/>
+    <path d="M30 70 V34" stroke="#a98e6f" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="30" cy="26" r="17" fill="#7ba368"/>
+    <circle cx="18" cy="36" r="10" fill="#8fb27c"/>
+    <circle cx="42" cy="36" r="10" fill="#8fb27c"/>
+    <circle cx="24" cy="24" r="3" fill="#d9775f"/>
+    <circle cx="37" cy="30" r="3" fill="#d9775f"/>
+    <ellipse cx="30" cy="10" rx="5" ry="4" fill="#d9775f"/>
+    <circle cx="35" cy="8" r="2.8" fill="#d9775f"/>
+    <path d="M38 8 l 3.5 1.2 l -3.5 1.2 Z" fill="#dd9a4e"/>
+  </g>
+</svg>
 
 <footer>
   給食は、未来をつくる。<br>
@@ -1307,6 +1456,23 @@ function printReport() {
   if (!results) return;
   window.print();
 }
+
+// ── Scroll-growing tree ────────────────────────────────────
+(function () {
+  const stages = ['gt-1', 'gt-2', 'gt-3', 'gt-4'];
+  let current = 0;
+  function update() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? window.scrollY / max : 0;
+    const idx = p < 0.28 ? 0 : p < 0.56 ? 1 : p < 0.84 ? 2 : 3;
+    if (idx !== current) {
+      document.getElementById(stages[current]).classList.remove('on');
+      document.getElementById(stages[idx]).classList.add('on');
+      current = idx;
+    }
+  }
+  window.addEventListener('scroll', update, { passive: true });
+})();
 
 // ── Share card (PNG) ───────────────────────────────────────
 function roundRect(ctx, x, y, w, h, r) {
