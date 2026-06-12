@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>みんなの未来給食 ─ 未来シミュレーター</title>
+<meta name="description" content="月にいちどの未来給食が、どんな未来につながっていくのか。学校・園のための教育シミュレーターです。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="みんなの未来給食 ─ 未来シミュレーター">
+<meta property="og:description" content="地球にやさしい食は、子どもにもやさしい。すこし先の未来を、いっしょにのぞいてみませんか。">
+<meta property="og:url" content="https://smile-kyushoku-project.github.io/mirai-kyushoku/">
+<meta property="og:image" content="https://smile-kyushoku-project.github.io/mirai-kyushoku/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -434,6 +441,89 @@
     color: var(--ink-soft);
   }
 
+  /* ───────────── world examples ───────────── */
+  .world-card {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 14px;
+  }
+  .world-flag {
+    flex-shrink: 0;
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+    color: #fff;
+  }
+  .world-flag.kr { background: #7da7b5; }
+  .world-flag.us { background: #8a7aa8; }
+  .world-flag.pt { background: #dd9a4e; }
+  .world-body h4 { font-size: 0.98rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .world-body .w-why {
+    display: inline-block;
+    font-size: 0.72rem;
+    color: var(--green-deep);
+    background: var(--green-pale);
+    border-radius: 999px;
+    padding: 1px 12px;
+    margin-bottom: 6px;
+  }
+  .world-body p { font-size: 0.84rem; line-height: 1.95; color: var(--ink-soft); }
+  .world-note { text-align: center; font-size: 0.82rem; color: var(--ink-soft); margin: 16px 0 44px; line-height: 2; }
+
+  /* ───────────── action CTA ───────────── */
+  .cta-box {
+    background: var(--green-pale);
+    border: 1.5px solid var(--green-soft);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    margin-bottom: 44px;
+    text-align: center;
+  }
+  .cta-box h3 { font-size: 1.05rem; font-weight: 700; color: var(--green-deep); margin-bottom: 8px; letter-spacing: 0.08em; }
+  .cta-box .cta-sub { font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 20px; line-height: 2; }
+  .cta-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--paper);
+    border: 1.5px solid var(--green-soft);
+    border-radius: 999px;
+    padding: 11px 26px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: var(--green-deep);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.12s;
+  }
+  .cta-btn:hover { background: #fff; transform: translateY(-1px); }
+  .cta-btn.primary { background: var(--terra); border-color: var(--terra); color: #fff; }
+  .cta-btn.primary:hover { background: #c2664f; }
+
+  /* ───────────── mobile polish ───────────── */
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 1.55rem; }
+    .hero .subtitle { font-size: 0.86rem; }
+    .sec-head .sec-title { font-size: 1rem; }
+    .impact-lead { font-size: 0.95rem; line-height: 2; }
+    .scene-story p { font-size: 0.88rem; line-height: 2; }
+    .choice-block .cb-line2 { font-size: 1.18rem; }
+    .choice-block .cb-line3 { font-size: 0.8rem; padding: 10px 16px; }
+    .reflection p { font-size: 0.93rem; line-height: 2.2; }
+    .world-card { padding: 18px 16px; gap: 12px; }
+  }
+
   /* ───────────── about ───────────── */
   .about {
     background: var(--sky-pale);
@@ -600,6 +690,9 @@
       <div class="num-input-row">
         <input type="number" id="students" value="500" min="1" max="10000">
         <span class="num-suffix">人の子どもたち</span>
+      </div>
+      <div class="num-input-row" style="margin-top:12px">
+        <input type="text" id="school-name" placeholder="学校・園の名前(任意)" style="width:240px;padding:10px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:0.9rem;font-family:inherit;color:var(--ink);background:var(--paper)">
       </div>
     </div>
 
@@ -910,16 +1003,61 @@
       </div>
     </div>
 
+    <!-- world examples -->
+    <div class="sec-head fade-section">
+      <span class="sec-title"><span class="sec-num">5</span>世界では、「<span class="kw">選べる給食</span>」が広がっています</span>
+      <div class="sec-dotline"></div>
+      <div class="sec-sub">〜 日本のすこし先をゆく、世界の学校たち 〜</div>
+    </div>
+
+    <div class="fade-section">
+      <div class="world-card">
+        <div class="world-flag kr">韓国</div>
+        <div class="world-body">
+          <h4>グリーン給食の日</h4>
+          <span class="w-why">きっかけ: 環境教育・気候変動への対応</span>
+          <p>ソウルなどの学校で、環境教育や健康教育の一環として、植物性メニューの日(グリーンデー)が取り入れられています。</p>
+        </div>
+      </div>
+      <div class="world-card">
+        <div class="world-flag us">アメリカ</div>
+        <div class="world-body">
+          <h4>Plant-Powered Friday(ニューヨーク市)</h4>
+          <span class="w-why">きっかけ: 子どもたちの健康</span>
+          <p>ニューヨーク市の公立学校では、2022年から毎週金曜日に植物性中心のメニューが基本になりました。市長自身の健康体験から始まった取り組みです。</p>
+        </div>
+      </div>
+      <div class="world-card">
+        <div class="world-flag pt">ポルトガル</div>
+        <div class="world-body">
+          <h4>法律で守られた「選べる権利」</h4>
+          <span class="w-why">きっかけ: 市民の声と多様性の尊重</span>
+          <p>2017年、公立学校などの公共食堂に植物性メニューの提供を求める法律ができました。「選べること」が権利として保障されています。</p>
+        </div>
+      </div>
+      <p class="world-note">多くの国では、「みんな同じ」から「みんなが食べられる」へと、<br>少しずつ変化が始まっています。</p>
+    </div>
+
     <!-- about -->
     <div class="about fade-section">
       <h3>このシミュレーターについて</h3>
-      <p>ここに表示される数値は、公表されている環境研究(食品ごとの水使用量・温室効果ガス排出量・土地利用に関する国際的な研究データ)をもとにした概算です。</p>
+      <p>ここに表示される数値は、オックスフォード大学の研究(Poore &amp; Nemecek, 2018年, Science誌掲載)をはじめとする、食品ごとの水使用量・温室効果ガス排出量・土地利用に関する国際的な環境研究をもとにした概算です。</p>
       <p>実際の効果は、献立の内容、食材の産地、地域の給食事情によって変わります。正確な予測ではなく、「およそこのくらいの規模」を実感していただくための教育用の目安としてご活用ください。</p>
       <p>シミュレーションの前提:植物性中心の給食1食あたり、水 約200リットル・温室効果ガス 約0.8kg・土地 約15㎡の節約と仮定しています。</p>
     </div>
 
-    <!-- report -->
-    <button class="report-btn fade-section" onclick="printReport()">学校レポートとして印刷・保存する</button>
+    <!-- action CTA -->
+    <div class="cta-box fade-section">
+      <h3>未来の給食を、一緒につくりませんか?</h3>
+      <p class="cta-sub">どんな方も、できるところから。<br>小さな一歩が、子どもたちの選べる未来につながります。</p>
+      <div class="cta-grid">
+        <button class="cta-btn primary" onclick="shareCard()">結果をシェアする</button>
+        <button class="cta-btn" onclick="printReport()">学校レポートを保存</button>
+        <a class="cta-btn" id="cta-site" href="#" target="_blank" rel="noopener" style="display:none">公式サイトを見る</a>
+        <a class="cta-btn" id="cta-insta" href="#" target="_blank" rel="noopener" style="display:none">Instagramをフォロー</a>
+        <a class="cta-btn" id="cta-mail" href="#" style="display:none">メールで相談する</a>
+      </div>
+    </div>
 
   </div><!-- #results -->
 
@@ -987,8 +1125,23 @@ const PARK_M2       = 2500;   // neighbourhood park
 const TREE_KG_YR    = 8;
 const HOME_KG_DAY   = 1.5;
 
-let state = { students: 500, freq: 1, period: 12 };
+// ── Project links (empty = button hidden; fill in real URLs) ──
+const LINKS = {
+  site:      '',   // 公式サイトURL
+  instagram: '',   // InstagramプロフィールURL
+  email:     'japan@animalallianceasia.org'    // 連絡先メールアドレス
+};
+const SITE_URL = 'https://smile-kyushoku-project.github.io/mirai-kyushoku/';
+
+let state = { students: 500, freq: 1, period: 12, school: '' };
 let results = null;
+
+// show CTA buttons that have links configured
+window.addEventListener('DOMContentLoaded', () => {
+  if (LINKS.site)      { const a = document.getElementById('cta-site');  a.href = LINKS.site; a.style.display = ''; }
+  if (LINKS.instagram) { const a = document.getElementById('cta-insta'); a.href = LINKS.instagram; a.style.display = ''; }
+  if (LINKS.email)     { const a = document.getElementById('cta-mail');  a.href = 'mailto:' + LINKS.email; a.style.display = ''; }
+});
 
 // ── Formatting ─────────────────────────────────────────────
 function fmt(n) {
@@ -1025,6 +1178,7 @@ document.querySelectorAll('#period-pills .pill').forEach(p => {
 // ── Step 3: peek into the future ───────────────────────────
 function peekFuture() {
   state.students = parseInt(document.getElementById('students').value) || 500;
+  state.school = (document.getElementById('school-name').value || '').trim();
   const meals = state.students * state.freq * state.period;
   results = {
     meals,
@@ -1062,18 +1216,36 @@ function freqLabel() {
   return state.freq === 1 ? '月に1回' : state.freq === 2 ? '月に2回' : '週に1回';
 }
 
+// gentle count-up inside a <b> element
+function animateNum(containerId, label, target, unit) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = `${label} <b>約0${unit}</b>`;
+  const b = el.querySelector('b');
+  const dur = 1400, t0 = performance.now();
+  function tick(t) {
+    const p = Math.min((t - t0) / dur, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    b.textContent = `約${fmt(target * eased)}${unit}`;
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
 function showResults() {
   const r = results;
   if (!r) return;
 
+  const who = state.school
+    ? `${state.school}(${state.students.toLocaleString()}人)`
+    : `${state.students.toLocaleString()}人の子どもたち`;
   document.getElementById('results-condition').textContent =
-    `〜 ${state.students.toLocaleString()}人の子どもたちと、${freqLabel()}・${periodLabel()}の未来給食 〜`;
+    `〜 ${who}と、${freqLabel()}・${periodLabel()}の未来給食 〜`;
 
   // water — lead with meaning
   const pools = r.water / POOL_L;
   document.getElementById('water-lead').innerHTML =
     `学校のプール<strong>約${fmtSoft(pools)}杯分</strong>にあたる水を、<br>未来へつなぐことができます。`;
-  document.getElementById('water-num').innerHTML = `水資源の節約 <b>約${fmt(r.water)}リットル</b>`;
+  animateNum('water-num', '水資源の節約', r.water, 'リットル');
   document.getElementById('water-compare').innerHTML =
     chip('おうちのお風呂', `約${fmt(r.water / BATH_L)}杯分`) +
     chip('500mlペットボトル', `約${fmt(r.water / BOTTLE_L)}本分`);
@@ -1082,7 +1254,7 @@ function showResults() {
   const yards = r.land / SCHOOLYARD_M2;
   document.getElementById('land-lead').innerHTML =
     `学校の校庭<strong>約${fmtSoft(yards)}個分</strong>の大地を、<br>森や自然のままにしておくことができます。`;
-  document.getElementById('land-num').innerHTML = `土地の節約 <b>約${fmt(r.land)}㎡</b>`;
+  animateNum('land-num', '土地の節約', r.land, '㎡');
   document.getElementById('land-compare').innerHTML =
     chip('教室', `約${fmt(r.land / CLASSROOM_M2)}室分`) +
     chip('近所の公園', `約${fmtSoft(r.land / PARK_M2)}個分`);
@@ -1091,7 +1263,7 @@ function showResults() {
   const trees = r.co2 / TREE_KG_YR;
   document.getElementById('co2-lead').innerHTML =
     `木<strong>約${fmt(trees)}本</strong>が1年間かけて吸収する量の<br>温室効果ガスを、減らすことができます。`;
-  document.getElementById('co2-num').innerHTML = `温室効果ガスの削減 <b>約${fmt(r.co2)}kg</b>`;
+  animateNum('co2-num', '温室効果ガスの削減', r.co2, 'kg');
   document.getElementById('co2-compare').innerHTML =
     chip('家庭の電気の使用', `約${fmt(r.co2 / HOME_KG_DAY)}日分`);
 
@@ -1113,8 +1285,9 @@ function buildReport() {
   const today = new Date();
   const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
 
+  const schoolPart = state.school ? `${state.school} ／ ` : '';
   document.getElementById('rp-meta').textContent =
-    `作成日: ${dateStr} ／ 条件: ${state.students.toLocaleString()}人 × ${freqLabel()} × ${periodLabel()}`;
+    `作成日: ${dateStr} ／ ${schoolPart}条件: ${state.students.toLocaleString()}人 × ${freqLabel()} × ${periodLabel()}`;
 
   document.getElementById('rp-water').textContent  = `約${fmt(r.water)} L`;
   document.getElementById('rp-water-c').textContent = `学校のプール約${fmtSoft(r.water / POOL_L)}杯分`;
@@ -1124,7 +1297,7 @@ function buildReport() {
   document.getElementById('rp-co2-c').textContent   = `木約${fmt(r.co2 / TREE_KG_YR)}本の年間吸収量`;
 
   document.getElementById('rp-msg').textContent =
-    `${state.students.toLocaleString()}人の子どもたちが通う学校で${freqLabel()}未来給食を選ぶと、` +
+    `${state.students.toLocaleString()}人の子どもたちが通う${state.school || '学校'}で${freqLabel()}未来給食を選ぶと、` +
     `${periodLabel()}で約${fmt(r.water)}リットルの水を未来へつなぐことができます。` +
     `これは学校のプール約${fmtSoft(r.water / POOL_L)}杯分にあたります。` +
     `子どもたちが大人になる未来へ、より多くの資源を残すための小さな一歩になります。`;
@@ -1133,6 +1306,108 @@ function buildReport() {
 function printReport() {
   if (!results) return;
   window.print();
+}
+
+// ── Share card (PNG) ───────────────────────────────────────
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function shareCard() {
+  if (!results) return;
+  const r = results;
+  const W = 1080, H = 1080;
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  const F = "'Zen Maru Gothic','Hiragino Maru Gothic ProN','Hiragino Sans',sans-serif";
+
+  // background
+  ctx.fillStyle = '#faf6ec';
+  ctx.fillRect(0, 0, W, H);
+
+  // inner card
+  ctx.fillStyle = '#fffdf7';
+  ctx.strokeStyle = '#e4dcc8';
+  ctx.lineWidth = 3;
+  roundRect(ctx, 60, 60, W - 120, H - 120, 36);
+  ctx.fill(); ctx.stroke();
+
+  ctx.textAlign = 'center';
+
+  // header
+  ctx.fillStyle = '#5e8c52';
+  ctx.font = `700 34px ${F}`;
+  ctx.fillText('みんなの未来給食 未来シミュレーター', W / 2, 160);
+
+  const who = state.school
+    ? `${state.school}(${state.students.toLocaleString()}人)`
+    : `${state.students.toLocaleString()}人の子どもたち`;
+  ctx.fillStyle = '#8a8270';
+  ctx.font = `500 30px ${F}`;
+  ctx.fillText(`${who} × ${freqLabel()} × ${periodLabel()}`, W / 2, 225);
+
+  // dotted divider
+  ctx.fillStyle = '#a8c49a';
+  for (let x = W / 2 - 130; x <= W / 2 + 130; x += 28) {
+    ctx.beginPath(); ctx.arc(x, 265, 4, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // three stats
+  const stats = [
+    { c: '#5d8fa3', bg: '#e9f2f5', t: '水資源',  v: `プール 約${fmtSoft(r.water / POOL_L)}杯分`,        s: `約${fmt(r.water)}リットルの水を未来へ` },
+    { c: '#8c7158', bg: '#f1ebe2', t: '大地',    v: `校庭 約${fmtSoft(r.land / SCHOOLYARD_M2)}個分`,    s: `約${fmt(r.land)}㎡の土地を自然のままに` },
+    { c: '#44693b', bg: '#e9f0e2', t: '空気',    v: `木 約${fmt(r.co2 / TREE_KG_YR)}本の年間吸収量`,    s: `温室効果ガスを約${fmt(r.co2)}kg削減` }
+  ];
+  stats.forEach((st, i) => {
+    const y = 320 + i * 180;
+    ctx.fillStyle = st.bg;
+    roundRect(ctx, 120, y, W - 240, 150, 24);
+    ctx.fill();
+    ctx.fillStyle = st.c;
+    ctx.font = `700 30px ${F}`;
+    ctx.textAlign = 'left';
+    ctx.fillText(st.t, 160, y + 62);
+    ctx.font = `700 40px ${F}`;
+    ctx.fillText(st.v, 280, y + 66);
+    ctx.fillStyle = '#8a8270';
+    ctx.font = `500 26px ${F}`;
+    ctx.fillText(st.s, 280, y + 114);
+    ctx.textAlign = 'center';
+  });
+
+  // message
+  ctx.fillStyle = '#7d5547';
+  ctx.font = `500 30px ${F}`;
+  ctx.fillText('子どもたちに、“選べる未来”を一緒に。', W / 2, 920);
+
+  // URL
+  ctx.fillStyle = '#8a8270';
+  ctx.font = `500 26px ${F}`;
+  ctx.fillText(SITE_URL.replace('https://', ''), W / 2, 975);
+
+  cv.toBlob(blob => {
+    const file = new File([blob], 'mirai-kyushoku.png', { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({
+        files: [file],
+        title: 'みんなの未来給食 未来シミュレーター',
+        text: `未来をのぞいてみました。 ${SITE_URL}`
+      }).catch(() => {});
+    } else {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'mirai-kyushoku.png';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+  }, 'image/png');
 }
 </script>
 </body>
