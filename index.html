@@ -1743,6 +1743,19 @@ window.addEventListener('DOMContentLoaded', () => {
   s.src = 'https://gc.zgo.at/count.js';
   s.dataset.goatcounter = ANALYTICS;
   document.head.appendChild(s);
+
+  // 流入元の計測(例: 名刺カードのQRは ?src=card)
+  const src = new URLSearchParams(location.search).get('src');
+  if (src && /^[a-z0-9-]{1,30}$/.test(src)) {
+    const send = () => {
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: 'src-' + src, title: '流入元: ' + src, event: true });
+      } else {
+        setTimeout(send, 600);
+      }
+    };
+    send();
+  }
 });
 
 // クリックイベント計測(ANALYTICS設定時のみ送信される)
