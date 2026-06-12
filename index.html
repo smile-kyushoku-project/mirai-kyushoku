@@ -672,6 +672,47 @@
     .world-card { padding: 18px 16px; gap: 12px; }
   }
 
+  /* ───────────── shojin (Japanese tradition) ───────────── */
+  .shojin-box {
+    background: linear-gradient(180deg, #f6f1e6 0%, var(--paper) 100%);
+    border: 1.5px solid #ddd2b8;
+    border-radius: var(--radius);
+    padding: 34px 30px;
+    margin-bottom: 44px;
+    text-align: center;
+  }
+  @media (max-width: 480px) { .shojin-box { padding: 26px 20px; } }
+  .shojin-box h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a6a4f;
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+  .shojin-box p {
+    font-size: 0.88rem;
+    line-height: 2.2;
+    color: var(--ink);
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  .shojin-box p + p { margin-top: 14px; }
+  .shojin-box .sj-em {
+    font-weight: 700;
+    color: #7a6a4f;
+    background: linear-gradient(transparent 62%, #ece1c6 62%);
+    white-space: nowrap;
+  }
+  .shojin-years {
+    display: inline-block;
+    margin: 16px 0 4px;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #7a6a4f;
+    letter-spacing: 0.08em;
+  }
+  .shojin-years small { font-size: 0.78rem; font-weight: 500; color: var(--ink-soft); }
+
   /* ───────────── about ───────────── */
   .about {
     background: var(--sky-pale);
@@ -1347,6 +1388,15 @@
         </div>
       </div>
       <p class="world-note">多くの国では、<br class="sp">「みんな同じ」から<br class="sp">「みんなが食べられる」へと、<br>少しずつ変化が始まっています。</p>
+    </div>
+
+    <!-- shojin ryori (Japanese tradition) -->
+    <div class="shojin-box fade-section">
+      <h3>じつは、日本の伝統でもあります</h3>
+      <p>植物性の食事は、日本人にとって<wbr>新しいものではありません。<br class="pc">飛鳥時代の675年、天皇の命により<wbr>牛や馬などの肉食が禁じられて以来、<br class="pc">明治時代に解禁されるまで──</p>
+      <span class="shojin-years">約1200年<small> ものあいだ</small></span>
+      <p>日本では肉を避ける食文化が<wbr>受け継がれてきました。<br class="pc">その中で育まれたのが、<span class="sj-em">精進料理</span>です。<br class="pc">豆腐やお麩、昆布や椎茸のおだし──<br class="sp">その知恵は、いまの和食にも生きています。</p>
+      <p>未来給食は、この日本の伝統の知恵を、<br class="sp">子どもたちの未来につなぐ取り組みでもあります。</p>
     </div>
 
     <!-- about -->
