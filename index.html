@@ -912,6 +912,57 @@
     background: var(--green-soft);
   }
 
+  /* ───────────── allergy donut ───────────── */
+  .allergy-box {
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    padding: 32px 30px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  @media (max-width: 480px) { .allergy-box { padding: 26px 18px; } }
+  .allergy-box h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--green-deep);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .allergy-lead {
+    font-size: 0.86rem;
+    line-height: 2;
+    color: var(--ink-soft);
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  .donut-wrap { position: relative; width: 220px; max-width: 68%; margin: 18px auto 6px; }
+  .donut-wrap svg { display: block; width: 100%; height: auto; }
+  .donut-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .donut-center .dc-big { font-size: 2.2rem; font-weight: 700; color: var(--green-deep); line-height: 1; }
+  .donut-center .dc-sub { font-size: 0.72rem; color: var(--ink-soft); margin-top: 6px; line-height: 1.5; }
+  .allergy-legend {
+    display: flex; flex-wrap: wrap;
+    justify-content: center; gap: 8px 18px;
+    margin-top: 12px;
+  }
+  .legend-item {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 0.76rem; color: var(--ink-soft);
+    word-break: keep-all;
+  }
+  .legend-item i { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
+  .allergy-note {
+    font-size: 0.82rem; line-height: 1.95; color: var(--ink);
+    margin-top: 16px;
+    word-break: keep-all; overflow-wrap: anywhere;
+  }
+  .allergy-source { font-size: 0.7rem; color: var(--ink-soft); margin-top: 12px; }
+
   /* ───────────── FAQ ───────────── */
   .faq-box { margin-bottom: 44px; }
   .faq-box details {
@@ -1674,6 +1725,29 @@
       <span class="shojin-years">約1200年<small> ものあいだ</small></span>
       <p>日本では肉を避ける食文化が<wbr>受け継がれてきました。<br class="pc">その中で育まれたのが、<span class="sj-em">精進料理</span>です。<br class="pc"><span class="sj-em">命を奪わない、食べものを無駄にしない</span>──<br class="sp">自然の恵みに感謝するその心は、<br class="sp">豆腐やお麩、昆布や椎茸のおだしとともに、<br class="sp">いまの和食にも生きています。</p>
       <p>未来給食は、この日本の伝統の知恵を、<br class="sp">子どもたちの未来につなぐ取り組みでもあります。</p>
+    </div>
+
+    <!-- allergy -->
+    <div class="allergy-box fade-section">
+      <h3>アレルギーのことも、考えています</h3>
+      <p class="allergy-lead">食物アレルギーの主な原因の多くは、<br class="sp">卵・牛乳・魚など「動物性の食材」です。<br>未来給食は動物性食材を使わないので──</p>
+      <div class="donut-wrap">
+        <svg viewBox="0 0 240 240" role="img" aria-label="食物アレルギーの主な原因のうち約70%が動物性">
+          <circle cx="120" cy="120" r="80" fill="none" stroke="#e2cfa8" stroke-width="34"/>
+          <circle cx="120" cy="120" r="80" fill="none" stroke="#5e8c52" stroke-width="34"
+                  stroke-dasharray="351.9 502.7" transform="rotate(-90 120 120)"/>
+        </svg>
+        <div class="donut-center">
+          <span class="dc-big">約70%</span>
+          <span class="dc-sub">主な原因を<br>はじめから避けられる</span>
+        </div>
+      </div>
+      <div class="allergy-legend">
+        <span class="legend-item"><i style="background:#5e8c52"></i>避けられる … 卵・牛乳・魚卵・魚・甲殻類</span>
+        <span class="legend-item"><i style="background:#e2cfa8"></i>注意が必要 … 小麦・ピーナッツ・そば・ナッツ など</span>
+      </div>
+      <p class="allergy-note">すべてのアレルギーに対応できるわけではありません。<br>それでも、より多くの子が同じ食卓を囲める<wbr>可能性が広がります。</p>
+      <p class="allergy-source">出典: フードダイバーシティ株式会社(n=2,954)</p>
     </div>
 
     <!-- nutrition assurance (collapsible) -->
