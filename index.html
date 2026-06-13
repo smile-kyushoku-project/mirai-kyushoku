@@ -779,7 +779,8 @@
 
   /* ───────────── mobile polish ───────────── */
   br.sp { display: none; }
-  .hero .subtitle, .cta-box h3, .cta-sub, .world-note, footer, .scene-story p { word-break: keep-all; overflow-wrap: anywhere; }
+  .hero .subtitle, .cta-box h3, .cta-sub, .world-note, footer, .scene-story p,
+  .choice-block, .reflection, .impact-lead, .inclusion-close, .intro-card p { word-break: keep-all; overflow-wrap: anywhere; }
   @media (max-width: 540px) {
     br.sp { display: inline; }
     br.pc { display: none; }
@@ -1578,8 +1579,8 @@
       <h3>みんなで囲む、同じ食卓</h3>
       <p class="impact-lead" id="inclusion-lead">—</p>
       <div class="impact-numline" id="inclusion-num">—</div>
-      <p class="inclusion-close">この子たちも、みんなと同じ給食を「選べる」日を、<br>少しずつ増やしていけたら。</p>
-      <p class="inc-src">※ 学校に通う子どもの食物アレルギー有病率の調査より(およそ5%)</p>
+      <p class="inclusion-close">この子たちも、みんなと同じ給食を<wbr>「選べる」日が、<br class="sp">少しずつ増えていけたら。</p>
+      <p class="inc-src">※ 食物アレルギー有病率の調査より(約5%)</p>
     </div>
 
     <!-- reflection -->
@@ -2290,7 +2291,7 @@ function showResults() {
   // inclusion — 4th gift (awareness number, not a "solved" count)
   const allergyKids = state.students * ALLERGY_RATE;
   document.getElementById('inclusion-lead').innerHTML =
-    `学校に通う子どもの<strong>およそ20人に1人</strong>が、<br>食物アレルギーがあるといわれています。<br>ふだんは別の対応や、お弁当が必要なことも。`;
+    `学校に通う子どもの、<strong>およそ20人に1人</strong>。<br>食物アレルギーがあるといわれています。<br>ふだんは別の対応や、お弁当が必要なことも。`;
   prepNum('inclusion-num', 'この学校では', allergyKids, '人ほど');
 
   // reveal
