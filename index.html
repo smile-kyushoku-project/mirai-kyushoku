@@ -377,6 +377,14 @@
   .impact-card.water h3 { color: #5d8fa3; }
   .impact-card.land  h3 { color: var(--earth); }
   .impact-card.co2   h3 { color: var(--green-deep); }
+  .impact-card.inclusion h3 { color: var(--terra); }
+  .impact-card.inclusion .impact-lead strong { color: #c2664f; }
+  .inclusion-close {
+    font-size: 0.96rem; line-height: 2.1; font-weight: 700;
+    color: #7d5547; margin-top: 16px;
+    word-break: keep-all; overflow-wrap: anywhere;
+  }
+  .inc-src { font-size: 0.7rem; color: var(--ink-soft); margin-top: 12px; }
 
   .impact-lead {
     font-size: 1.02rem;
@@ -1365,7 +1373,7 @@
     <div class="dots" style="margin-top:44px">・・・・・・・・・</div>
 
     <div class="sec-head fade-section">
-      <span class="sec-title"><span class="sec-num">3</span><span class="sec-text">未来にのこせる、<br class="sp"><span class="kw">3つの贈りもの</span></span></span>
+      <span class="sec-title"><span class="sec-num">3</span><span class="sec-text">未来へつながる、<br class="sp"><span class="kw">4つの贈りもの</span></span></span>
       <div class="sec-dotline"></div>
       <div class="sec-sub" id="results-condition">〜 〜</div>
     </div>
@@ -1502,6 +1510,76 @@
       <p class="impact-lead" id="co2-lead">—</p>
       <div class="impact-numline" id="co2-num">—</div>
       <div class="compare-row" id="co2-compare"></div>
+    </div>
+
+    <!-- inclusion (4th gift: same table) -->
+    <div class="impact-card inclusion fade-section">
+      <div class="ic-scene">
+        <svg viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="さまざまな子どもたちが同じ食卓を囲む">
+          <rect width="680" height="150" fill="#fbf3ea"/>
+          <path d="M0 96 Q 340 78 680 92 V 150 H 0 Z" fill="#f3e6d4"/>
+          <!-- long table -->
+          <rect x="120" y="104" width="440" height="13" rx="6" fill="#d8b489"/>
+          <rect x="150" y="117" width="9" height="20" rx="3" fill="#c39a6e"/>
+          <rect x="521" y="117" width="9" height="20" rx="3" fill="#c39a6e"/>
+          <!-- bowls + steam -->
+          <g>
+            <path d="M196 104 a13 8 0 0 0 26 0 Z" fill="#fffdf7" stroke="#c9bfa5" stroke-width="1.4"/>
+            <path d="M209 96 q3 -4 0 -8" stroke="#cdd8d0" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </g>
+          <g>
+            <path d="M327 104 a13 8 0 0 0 26 0 Z" fill="#fffdf7" stroke="#c9bfa5" stroke-width="1.4"/>
+            <path d="M340 96 q-3 -4 0 -8" stroke="#cdd8d0" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </g>
+          <g>
+            <path d="M458 104 a13 8 0 0 0 26 0 Z" fill="#fffdf7" stroke="#c9bfa5" stroke-width="1.4"/>
+            <path d="M471 96 q3 -4 0 -8" stroke="#cdd8d0" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </g>
+          <!-- diverse children -->
+          <g>
+            <circle cx="170" cy="74" r="15" fill="#f6dcc4"/>
+            <path d="M155 72 a15 15 0 0 1 30 0 L185 67 Q170 53 155 67 Z" fill="#6b4f3a"/>
+            <rect x="155" y="88" width="30" height="20" rx="9" fill="#d9775f"/>
+          </g>
+          <g>
+            <circle cx="235" cy="76" r="15" fill="#eac3a2"/>
+            <path d="M220 74 a15 15 0 0 1 30 0 L250 65 Q235 55 220 65 Z" fill="#2f2a26"/>
+            <rect x="220" y="90" width="30" height="20" rx="9" fill="#7da7b5"/>
+          </g>
+          <g>
+            <circle cx="340" cy="73" r="15" fill="#f6dcc4"/>
+            <path d="M325 71 a15 15 0 0 1 30 0 L355 67 Q340 51 325 67 Z" fill="#8c5b3c"/>
+            <rect x="325" y="87" width="30" height="20" rx="9" fill="#8fb27c"/>
+          </g>
+          <g>
+            <circle cx="445" cy="76" r="15" fill="#dfb288"/>
+            <path d="M430 74 a15 15 0 0 1 30 0 L460 66 Q445 54 430 66 Z" fill="#4a3526"/>
+            <rect x="430" y="90" width="30" height="20" rx="9" fill="#e8c46a"/>
+          </g>
+          <g>
+            <circle cx="510" cy="74" r="15" fill="#f0d0b0"/>
+            <path d="M495 72 a15 15 0 0 1 30 0 L525 67 Q510 55 495 67 Z" fill="#b5793c"/>
+            <rect x="495" y="88" width="30" height="20" rx="9" fill="#c79a4e"/>
+          </g>
+          <!-- smiles + eyes -->
+          <g stroke="#7a5c44" stroke-width="1.7" fill="none" stroke-linecap="round">
+            <path d="M163 78 q7 5 14 0"/><path d="M228 80 q7 5 14 0"/>
+            <path d="M333 77 q7 5 14 0"/><path d="M438 80 q7 5 14 0"/><path d="M503 78 q7 5 14 0"/>
+          </g>
+          <g fill="#5b4632">
+            <circle cx="163" cy="71" r="1.7"/><circle cx="177" cy="71" r="1.7"/>
+            <circle cx="228" cy="73" r="1.7"/><circle cx="242" cy="73" r="1.7"/>
+            <circle cx="333" cy="70" r="1.7"/><circle cx="347" cy="70" r="1.7"/>
+            <circle cx="438" cy="73" r="1.7"/><circle cx="452" cy="73" r="1.7"/>
+            <circle cx="503" cy="71" r="1.7"/><circle cx="517" cy="71" r="1.7"/>
+          </g>
+        </svg>
+      </div>
+      <h3>みんなで囲む、同じ食卓</h3>
+      <p class="impact-lead" id="inclusion-lead">—</p>
+      <div class="impact-numline" id="inclusion-num">—</div>
+      <p class="inclusion-close">この子たちも、みんなと同じ給食を「選べる」日を、<br>少しずつ増やしていけたら。</p>
+      <p class="inc-src">※ 学校に通う子どもの食物アレルギー有病率の調査より(およそ5%)</p>
     </div>
 
     <!-- reflection -->
@@ -1946,6 +2024,7 @@ const CLASSROOM_M2  = 64;
 const PARK_M2       = 2500;   // neighbourhood park
 const TREE_KG_YR    = 8;
 const HOME_KG_DAY   = 1.5;
+const ALLERGY_RATE  = 0.05;   // 食物アレルギー有病率 約5%(20人に1人)
 
 // ── Project links (empty = button hidden; fill in real URLs) ──
 const LINKS = {
@@ -2207,6 +2286,12 @@ function showResults() {
   prepNum('co2-num', '温室効果ガスの削減', r.co2, 'kg');
   document.getElementById('co2-compare').innerHTML =
     chip('家庭の電気の使用', `約${fmt(r.co2 / HOME_KG_DAY)}日分`);
+
+  // inclusion — 4th gift (awareness number, not a "solved" count)
+  const allergyKids = state.students * ALLERGY_RATE;
+  document.getElementById('inclusion-lead').innerHTML =
+    `学校に通う子どもの<strong>およそ20人に1人</strong>が、<br>食物アレルギーがあるといわれています。<br>ふだんは別の対応や、お弁当が必要なことも。`;
+  prepNum('inclusion-num', 'この学校では', allergyKids, '人ほど');
 
   // reveal
   const res = document.getElementById('results');
