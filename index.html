@@ -952,8 +952,13 @@
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
   }
-  .donut-center .dc-big { font-size: 2.2rem; font-weight: 700; color: var(--green-deep); line-height: 1; }
-  .donut-center .dc-sub { font-size: 0.72rem; color: var(--ink-soft); margin-top: 6px; line-height: 1.5; }
+  .donut-center .dc-big { font-size: 2.3rem; font-weight: 700; color: var(--green-deep); line-height: 1; }
+  .donut-center .dc-small { font-size: 0.72rem; color: var(--ink-soft); margin-top: 3px; }
+  .donut-cap {
+    font-size: 0.92rem; font-weight: 700; color: var(--green-deep);
+    margin-top: 4px; line-height: 1.8;
+    word-break: keep-all; overflow-wrap: anywhere;
+  }
   .allergy-legend {
     display: flex; flex-wrap: wrap;
     justify-content: center; gap: 8px 18px;
@@ -1818,9 +1823,10 @@
         </svg>
         <div class="donut-center">
           <span class="dc-big">約70%</span>
-          <span class="dc-sub">主な原因を<br>はじめから避けられる</span>
+          <span class="dc-small">が動物性</span>
         </div>
       </div>
+      <p class="donut-cap">主な原因を、はじめから避けられます。</p>
       <div class="allergy-legend">
         <span class="legend-item"><i style="background:#5e8c52"></i>避けられる … 卵・牛乳・魚卵・魚・甲殻類</span>
         <span class="legend-item"><i style="background:#e2cfa8"></i>注意が必要 … 小麦・ピーナッツ・そば・ナッツ など</span>
