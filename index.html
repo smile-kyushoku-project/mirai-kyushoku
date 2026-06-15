@@ -237,6 +237,45 @@
   .go-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #b85c46; }
   .go-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b85c46; }
 
+  /* ── hero anchor button ── */
+  .hero-cta {
+    display: inline-block;
+    margin-top: 24px;
+    background: var(--green);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 13px 32px;
+    font-size: 0.98rem;
+    font-weight: 700;
+    font-family: inherit;
+    letter-spacing: 0.06em;
+    box-shadow: 0 4px 0 #44693b;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #44693b; }
+  .hero-cta:active { transform: translateY(2px); box-shadow: 0 2px 0 #44693b; }
+
+  /* ── loading overlay ── */
+  #loading {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(250, 246, 236, 0.94);
+    z-index: 200;
+    align-items: center; justify-content: center;
+    flex-direction: column;
+  }
+  #loading.on { display: flex; }
+  #loading .spinner {
+    width: 46px; height: 46px;
+    border: 5px solid var(--green-pale);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loading p { margin-top: 18px; color: var(--green-deep); font-weight: 700; font-size: 0.95rem; letter-spacing: 0.04em; }
+
   /* ── student slider (touch to play) ── */
   .slider-wrap { padding-left: 46px; margin-top: 16px; }
   @media (max-width: 480px) { .slider-wrap { padding-left: 0; } }
@@ -1156,6 +1195,7 @@
   <span class="eyebrow">みんなの未来給食</span>
   <h1>未来シミュレーター</h1>
   <p class="subtitle">地球にやさしい食は、<wbr>子どもにもやさしい。<br>月に1回の未来給食が、<br class="sp">どんな未来につながっていくのか。<br>いっしょに、<wbr>すこし先の未来を<wbr>のぞいてみませんか。</p>
+  <a href="#input-card" class="hero-cta">今すぐシミュレーションを試す ↓</a>
 </div>
 
 <hr style="border:none; border-top:1px solid var(--line); margin: 8px auto 36px; max-width:120px;">
@@ -1215,7 +1255,7 @@
       </div>
     </div>
 
-    <button class="go-btn" onclick="peekFuture()">未来をのぞいてみる</button>
+    <button class="go-btn" onclick="startSimulation()">未来をのぞいてみる</button>
   </div>
   <p style="text-align:center; font-size:0.8rem; color:var(--ink-soft); margin-top:14px;">結果は、学校でそのまま使える「未来給食レポート」として印刷・保存できます。</p>
 
@@ -1587,6 +1627,31 @@
       <p class="inc-src">※ 食物アレルギー有病率の調査より(約5%)</p>
     </div>
 
+    <!-- FAQ (accordion) -->
+    <div class="faq-box fade-section">
+      <details>
+        <summary><span class="q-mark">Q.</span>子どもに無理に食べさせることになりませんか？</summary>
+        <div class="faq-a">いいえ。私たちが目指しているのは<b>「選べること」</b>です。希望制(食べるかどうかを子どもや家庭が選べる形)から始めることができます。アレルギーや宗教上の理由で「自分だけ別メニュー」だった子が、みんなと同じものを選べるようになる日でもあります。</div>
+      </details>
+      <details>
+        <summary><span class="q-mark">Q.</span>特定の考え方の押し付けになりませんか？</summary>
+        <div class="faq-a">未来給食の目的は、<b>誰もが安心して食べられる給食</b>と、食から世界を考える<b>食育</b>です。学習指導要領が掲げる「多様な他者の価値を尊重する」学びを、給食という生活の場で実践するものであり、特定の食生活をすすめるものではありません。</div>
+      </details>
+      <details>
+        <summary><span class="q-mark">Q.</span>おいしくないのでは？子どもが残しませんか？</summary>
+        <div class="faq-a">献立は、カレーやハンバーグ、麻婆豆腐など<b>子どもが大好きな定番メニュー</b>が中心です。実際に導入した小学校では、子どもたちはお肉との違いに気づかず「おいしい、おいしい」と食べたと報告されています。</div>
+      </details>
+    </div>
+
+    <!-- quick action CTA (after results) -->
+    <div class="cta-box fade-section">
+      <div class="cta-grid">
+        <button class="cta-btn primary" onclick="shareCard()">結果をシェアする</button>
+        <button class="cta-btn" onclick="printReport()">学校レポートを保存</button>
+        <a class="cta-btn" href="mailto:japan@animalallianceasia.org">導入を相談する</a>
+      </div>
+    </div>
+
     <!-- reflection -->
     <div class="reflection fade-section">
       <p>未来は、特別な誰かがつくるものではありません。</p>
@@ -1879,22 +1944,6 @@
       </div>
     </details>
 
-    <!-- FAQ -->
-    <div class="faq-box fade-section">
-      <details>
-        <summary><span class="q-mark">Q.</span>子どもに無理に食べさせることになりませんか？</summary>
-        <div class="faq-a">いいえ。私たちが目指しているのは<b>「選べること」</b>です。希望制(食べるかどうかを子どもや家庭が選べる形)から始めることができます。アレルギーや宗教上の理由で「自分だけ別メニュー」だった子が、みんなと同じものを選べるようになる日でもあります。</div>
-      </details>
-      <details>
-        <summary><span class="q-mark">Q.</span>特定の考え方の押し付けになりませんか？</summary>
-        <div class="faq-a">未来給食の目的は、<b>誰もが安心して食べられる給食</b>と、食から世界を考える<b>食育</b>です。学習指導要領が掲げる「多様な他者の価値を尊重する」学びを、給食という生活の場で実践するものであり、特定の食生活をすすめるものではありません。</div>
-      </details>
-      <details>
-        <summary><span class="q-mark">Q.</span>おいしくないのでは？子どもが残しませんか？</summary>
-        <div class="faq-a">献立は、カレーやハンバーグ、麻婆豆腐など<b>子どもが大好きな定番メニュー</b>が中心です。実際に導入した小学校では、子どもたちはお肉との違いに気づかず「おいしい、おいしい」と食べたと報告されています。</div>
-      </details>
-    </div>
-
     <!-- about -->
     <div class="about fade-section">
       <h3>このシミュレーターについて</h3>
@@ -1919,6 +1968,9 @@
   </div><!-- #results -->
 
 </div><!-- .wrap -->
+
+<!-- loading overlay -->
+<div id="loading"><div class="spinner"></div><p>あなたの学校の未来を計算しています…</p></div>
 
 <!-- scroll-growing tree -->
 <svg id="grow-tree" viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1967,6 +2019,7 @@
   給食は、未来をつくる。<br>
   みんなの未来給食<br class="sp">
   ─ 誰も取り残さない<wbr>給食の未来を目指して ─
+  <br><span style="font-size:10px; color:#999;">試作版(開発中)─ 内容は今後変わることがあります</span>
 </footer>
 
 <!-- ─────────────── print report ─────────────── -->
@@ -2031,6 +2084,7 @@ const PARK_M2       = 2500;   // neighbourhood park
 const TREE_KG_YR    = 8;
 const HOME_KG_DAY   = 1.5;
 const ALLERGY_RATE  = 0.05;   // 食物アレルギー有病率 約5%(20人に1人)
+const CAR_TYO_OSA_KG = 130;   // 東京〜大阪を車で1往復 約130kg-CO2
 
 // ── Project links (empty = button hidden; fill in real URLs) ──
 const LINKS = {
@@ -2215,6 +2269,13 @@ document.querySelectorAll('.fold, .faq-box details').forEach(d => {
 });
 
 // ── Step 3: peek into the future ───────────────────────────
+// loading演出を1.5秒はさんでから結果へ(計算ロジックは peekFuture のまま)
+function startSimulation() {
+  const l = document.getElementById('loading');
+  l.classList.add('on');
+  setTimeout(() => { l.classList.remove('on'); peekFuture(); }, 1500);
+}
+
 function peekFuture() {
   trackEvent('simulate');
   state.students = parseInt(document.getElementById('students').value) || 500;
@@ -2291,7 +2352,8 @@ function showResults() {
     `木<strong>約${fmt(trees)}本</strong>が1年間かけて吸収する量の<br>温室効果ガスを、減らすことができます。`;
   prepNum('co2-num', '温室効果ガスの削減', r.co2, 'kg');
   document.getElementById('co2-compare').innerHTML =
-    chip('家庭の電気の使用', `約${fmt(r.co2 / HOME_KG_DAY)}日分`);
+    chip('家庭の電気の使用', `約${fmt(r.co2 / HOME_KG_DAY)}日分`) +
+    chip('東京〜大阪を車で', `約${fmt(r.co2 / CAR_TYO_OSA_KG)}往復分`);
 
   // inclusion — 4th gift (awareness number, not a "solved" count)
   const allergyKids = state.students * ALLERGY_RATE;
@@ -2464,6 +2526,5 @@ function shareCard() {
   }, 'image/png');
 }
 </script>
-<div style="text-align:center; margin:0 0 30px"><span style="display:inline-block;font-size:0.75rem;color:#8a8270;border:1px dashed #c9bfa5;border-radius:999px;padding:3px 16px;letter-spacing:0.08em;">試作版(開発中)─ 内容は今後変わることがあります</span></div>
 </body>
 </html>
