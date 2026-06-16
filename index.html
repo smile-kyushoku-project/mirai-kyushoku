@@ -363,6 +363,8 @@
     transition: opacity 1.1s ease, transform 1.1s ease;
   }
   .scene-story p.shown { opacity: 1; transform: none; }
+  .scene-story strong { font-weight: 700; color: var(--terra); }
+  .scene-story .em-green { font-weight: 700; color: var(--green-deep); }
 
   .scene-more {
     display: block;
@@ -1429,9 +1431,9 @@
     </div>
 
     <div class="scene-story">
-      <p id="story-1">その日は、アレルギーのある子も、<br class="sp">宗教や文化のちがいがある子も、<br>みんなと同じメニューを<wbr>「選べる」日です。</p>
-      <p id="story-2">みんなが大好きなカレーやハンバーグも、<br class="sp">植物性の食材で。<br>同じ食卓で「おいしいね」と<wbr>笑顔がならびます。</p>
-      <p id="story-3">そしてこの一食は、<br class="sp">子どもたちが大人になる未来の地球にも、<br>小さな贈りものを残しています。</p>
+      <p id="story-1">その日は、<strong>アレルギーのある子</strong>も、<br class="sp"><strong>宗教や文化のちがいがある子</strong>も、<br>みんなと同じメニューを<wbr><strong>「選べる」日</strong>です。</p>
+      <p id="story-2">みんなが大好きな<span class="em-green">カレーやハンバーグ</span>も、<br class="sp"><span class="em-green">植物性の食材</span>で。<br>同じ食卓で「おいしいね」と<wbr><strong>笑顔</strong>がならびます。</p>
+      <p id="story-3">そしてこの一食は、<br class="sp">子どもたちが大人になる<strong>未来の地球</strong>にも、<br><strong>小さな贈りもの</strong>を残しています。</p>
     </div>
 
     <button class="scene-more" id="scene-more-btn" onclick="showResults()">その贈りものを、くわしく見てみる</button>
