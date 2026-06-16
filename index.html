@@ -1259,9 +1259,9 @@
         <span class="step-q">未来給食を、どれくらい体験してみますか？</span>
       </div>
       <div class="pill-row" id="freq-pills">
+        <button class="pill" data-freq="0.5">2ヶ月に1回</button>
         <button class="pill active" data-freq="1">月に1回</button>
         <button class="pill" data-freq="2">月に2回</button>
-        <button class="pill" data-freq="4">週に1回</button>
       </div>
       <div style="height:12px"></div>
       <div class="pill-row" id="period-pills">
@@ -2503,7 +2503,7 @@ document.querySelectorAll('#freq-pills .pill').forEach(p => {
   p.addEventListener('click', () => {
     document.querySelectorAll('#freq-pills .pill').forEach(q => q.classList.remove('active'));
     p.classList.add('active');
-    state.freq = parseInt(p.dataset.freq);
+    state.freq = parseFloat(p.dataset.freq);
   });
 });
 document.querySelectorAll('#period-pills .pill').forEach(p => {
@@ -2655,7 +2655,7 @@ function periodLabel() {
   return state.period === 12 ? '1年間' : state.period === 6 ? '半年' : '3ヶ月';
 }
 function freqLabel() {
-  return state.freq === 1 ? '月に1回' : state.freq === 2 ? '月に2回' : '週に1回';
+  return state.freq === 1 ? '月に1回' : state.freq === 2 ? '月に2回' : '2ヶ月に1回';
 }
 
 function showResults() {
