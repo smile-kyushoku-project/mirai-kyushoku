@@ -1200,9 +1200,22 @@
       gap: 6px;
     }
   }
+
+  /* ── language toggle ── */
+  #lang-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 300;
+    background: var(--paper); color: var(--green-deep);
+    border: 1.5px solid var(--green-soft); border-radius: 999px;
+    padding: 6px 16px; font-size: 0.8rem; font-weight: 700;
+    font-family: inherit; letter-spacing: 0.04em; cursor: pointer;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+  }
+  #lang-toggle:hover { background: var(--green-pale); }
+  @media print { #lang-toggle { display: none; } }
 </style>
 </head>
 <body>
+<button id="lang-toggle" onclick="toggleLang()" aria-label="Switch language">EN</button>
 
 <!-- ─────────────── hero ─────────────── -->
 <div class="hero">
@@ -2439,6 +2452,9 @@ function findMenuTemplate(input) {
   ) || null;
 }
 
+// ── 言語状態（早期宣言：スライダー等が参照するため） ──
+var LANG = 'ja';
+
 // ── Calculation constants (unchanged from v1) ──────────────
 const WATER_PER_MEAL = 200;   // L per student per meal
 const CO2_PER_MEAL   = 0.8;   // kg CO2e per student per meal
@@ -2523,6 +2539,20 @@ function fmtSoft(n) {
   if (n >= 1)   return String(Math.round(n * 10) / 10);
   return String(Math.round(n * 100) / 100);
 }
+// 言語対応の大きな数フォーマット（英語は million / billion）
+function fmtL(n) {
+  if (LANG !== 'en') return fmt(n);
+  if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + ' billion';
+  if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + ' million';
+  return Math.round(n).toLocaleString('en-US');
+}
+function fmtSoftL(n) {
+  if (LANG !== 'en') return fmtSoft(n);
+  if (n >= 100) return Math.round(n).toLocaleString('en-US');
+  if (n >= 10)  return String(Math.round(n));
+  if (n >= 1)   return String(Math.round(n * 10) / 10);
+  return String(Math.round(n * 100) / 100);
+}
 
 // ── Pill selection ─────────────────────────────────────────
 document.querySelectorAll('#freq-pills .pill').forEach(p => {
@@ -2544,6 +2574,14 @@ document.querySelectorAll('#period-pills .pill').forEach(p => {
 const SLIDER_MIN = 1;
 const SLIDER_MAX = 2000;
 function sizeWord(n) {
+  if (LANG === 'en') {
+    if (n < 20)   return 'a small nursery / school';
+    if (n < 100)  return 'a small school';
+    if (n < 300)  return 'about an elementary school';
+    if (n < 600)  return 'a mid-sized school';
+    if (n < 1000) return 'a large school';
+    return 'a very large school / whole community';
+  }
   if (n < 20)   return 'すこし小さな園・学校';
   if (n < 100)  return 'ちいさな園・学校くらい';
   if (n < 300)  return '小学校くらいの人数';
@@ -2561,9 +2599,14 @@ function sizeWord(n) {
   slider.step = '1';
 
   const clamp = v => Math.min(SLIDER_MAX, Math.max(SLIDER_MIN, v));
+  let lastN = 500;
   function updateHint(n) {
-    hint.innerHTML = `<b>${n.toLocaleString()}人</b>の学校 ── ${sizeWord(n)}`;
+    lastN = n;
+    hint.innerHTML = (LANG === 'en')
+      ? `<b>${n.toLocaleString('en-US')}</b> students ── ${sizeWord(n)}`
+      : `<b>${n.toLocaleString()}人</b>の学校 ── ${sizeWord(n)}`;
   }
+  window.refreshSliderHint = () => updateHint(parseInt(numInput.value) || lastN);
   // slider drag → number (1人単位)
   slider.addEventListener('input', () => {
     const n = parseInt(slider.value);
@@ -2613,17 +2656,19 @@ function prepNum(containerId, label, target, unit) {
   el.dataset.target = target;
   el.dataset.unit = unit;
   delete el.dataset.done;
-  el.innerHTML = `${label} <b>約0${unit}</b>`;
+  el.dataset.pfx = (LANG === 'en') ? '≈ ' : '約';
+  el.innerHTML = `${label} <b>${el.dataset.pfx}0${unit}</b>`;
 }
 function runCountUp(el) {
   el.dataset.done = '1';
   const label = el.dataset.label, unit = el.dataset.unit, target = parseFloat(el.dataset.target);
+  const pfx = el.dataset.pfx || '約';
   const b = el.querySelector('b');
   const dur = 1400, t0 = performance.now();
   function tick(t) {
     const p = Math.min((t - t0) / dur, 1);
     const eased = 1 - Math.pow(1 - p, 3);
-    b.textContent = `約${fmt(target * eased)}${unit}`;
+    b.textContent = `${pfx}${fmtL(target * eased)}${unit}`;
     if (p < 1) requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
@@ -2678,59 +2723,70 @@ function chip(label, value) {
 }
 
 function periodLabel() {
+  if (LANG === 'en') return state.period === 12 ? '1 year' : state.period === 6 ? '6 months' : '3 months';
   return state.period === 12 ? '1年間' : state.period === 6 ? '半年' : '3ヶ月';
 }
 function freqLabel() {
+  if (LANG === 'en') return state.freq === 1 ? 'once a month' : state.freq === 2 ? 'twice a month' : 'once every 2 months';
   return state.freq === 1 ? '月に1回' : state.freq === 2 ? '月に2回' : '2ヶ月に1回';
 }
+// レポート・共有カードは常に日本語（混在防止）
+function freqJa() { return state.freq === 1 ? '月に1回' : state.freq === 2 ? '月に2回' : '2ヶ月に1回'; }
+function periodJa() { return state.period === 12 ? '1年間' : state.period === 6 ? '半年' : '3ヶ月'; }
 
-function showResults() {
+function showResults(keepScroll) {
   const r = results;
   if (!r) return;
+  const EN = (LANG === 'en');
 
   const who = state.school
-    ? `${state.school}(${state.students.toLocaleString()}人)`
-    : `${state.students.toLocaleString()}人の子どもたち`;
-  document.getElementById('results-condition').textContent =
-    `〜 ${who}と、${freqLabel()}・${periodLabel()}の未来給食 〜`;
+    ? (EN ? `${state.school} (${state.students.toLocaleString()} children)` : `${state.school}(${state.students.toLocaleString()}人)`)
+    : (EN ? `${state.students.toLocaleString()} children` : `${state.students.toLocaleString()}人の子どもたち`);
+  document.getElementById('results-condition').textContent = EN
+    ? `— ${who}, ${freqLabel()} for ${periodLabel()} —`
+    : `〜 ${who}と、${freqLabel()}・${periodLabel()}の未来給食 〜`;
 
-  // water — lead with meaning
+  // water
   const pools = r.water / POOL_L;
-  document.getElementById('water-lead').innerHTML =
-    `学校のプール<strong>約${fmtSoft(pools)}杯分</strong>にあたる水を、<br>未来へつなぐことができます。`;
-  prepNum('water-num', '水資源の節約', r.water, 'リットル');
-  document.getElementById('water-compare').innerHTML =
-    chip('おうちのお風呂', `約${fmt(r.water / BATH_L)}杯分`) +
-    chip('500mlペットボトル', `約${fmt(r.water / BOTTLE_L)}本分`);
+  document.getElementById('water-lead').innerHTML = EN
+    ? `Enough water for <strong>≈${fmtSoftL(pools)} school pools</strong>,<br>carried forward to the future.`
+    : `学校のプール<strong>約${fmtSoft(pools)}杯分</strong>にあたる水を、<br>未来へつなぐことができます。`;
+  prepNum('water-num', EN ? 'Water saved' : '水資源の節約', r.water, EN ? ' L' : 'リットル');
+  document.getElementById('water-compare').innerHTML = EN
+    ? chip('Home baths', `≈${fmtL(r.water / BATH_L)}`) + chip('500ml bottles', `≈${fmtL(r.water / BOTTLE_L)}`)
+    : chip('おうちのお風呂', `約${fmt(r.water / BATH_L)}杯分`) + chip('500mlペットボトル', `約${fmt(r.water / BOTTLE_L)}本分`);
 
   // land
   const yards = r.land / SCHOOLYARD_M2;
-  document.getElementById('land-lead').innerHTML =
-    `学校の校庭<strong>約${fmtSoft(yards)}個分</strong>の大地を、<br>森や自然のままにしておくことができます。`;
-  prepNum('land-num', '土地の節約', r.land, '㎡');
-  document.getElementById('land-compare').innerHTML =
-    chip('教室', `約${fmt(r.land / CLASSROOM_M2)}室分`) +
-    chip('近所の公園', `約${fmtSoft(r.land / PARK_M2)}個分`);
+  document.getElementById('land-lead').innerHTML = EN
+    ? `Land the size of <strong>≈${fmtSoftL(yards)} schoolyards</strong>,<br>left as forest and nature.`
+    : `学校の校庭<strong>約${fmtSoft(yards)}個分</strong>の大地を、<br>森や自然のままにしておくことができます。`;
+  prepNum('land-num', EN ? 'Land saved' : '土地の節約', r.land, EN ? ' m²' : '㎡');
+  document.getElementById('land-compare').innerHTML = EN
+    ? chip('Classrooms', `≈${fmtL(r.land / CLASSROOM_M2)}`) + chip('Local parks', `≈${fmtSoftL(r.land / PARK_M2)}`)
+    : chip('教室', `約${fmt(r.land / CLASSROOM_M2)}室分`) + chip('近所の公園', `約${fmtSoft(r.land / PARK_M2)}個分`);
 
   // co2
   const trees = r.co2 / TREE_KG_YR;
-  document.getElementById('co2-lead').innerHTML =
-    `木<strong>約${fmt(trees)}本</strong>が1年間かけて吸収する量の<br>温室効果ガスを、減らすことができます。`;
-  prepNum('co2-num', '温室効果ガスの削減', r.co2, 'kg');
-  document.getElementById('co2-compare').innerHTML =
-    chip('家庭の電気の使用', `約${fmt(r.co2 / HOME_KG_DAY)}日分`) +
-    chip('東京〜大阪を車で', `約${fmt(r.co2 / CAR_TYO_OSA_KG)}往復分`);
+  document.getElementById('co2-lead').innerHTML = EN
+    ? `As much greenhouse gas as <strong>≈${fmtL(trees)} trees</strong><br>absorb in a year — kept out of the air.`
+    : `木<strong>約${fmt(trees)}本</strong>が1年間かけて吸収する量の<br>温室効果ガスを、減らすことができます。`;
+  prepNum('co2-num', EN ? 'Greenhouse gas cut' : '温室効果ガスの削減', r.co2, ' kg');
+  document.getElementById('co2-compare').innerHTML = EN
+    ? chip('Days of home electricity', `≈${fmtL(r.co2 / HOME_KG_DAY)}`) + chip('Car round-trips Tokyo–Osaka', `≈${fmtL(r.co2 / CAR_TYO_OSA_KG)}`)
+    : chip('家庭の電気の使用', `約${fmt(r.co2 / HOME_KG_DAY)}日分`) + chip('東京〜大阪を車で', `約${fmt(r.co2 / CAR_TYO_OSA_KG)}往復分`);
 
-  // inclusion — 4th gift (awareness number, not a "solved" count)
+  // inclusion
   const allergyKids = state.students * ALLERGY_RATE;
-  document.getElementById('inclusion-lead').innerHTML =
-    `学校に通う子どもの、<strong>およそ20人に1人</strong>。<br>食物アレルギーがあるといわれています。<br>ふだんは別の対応や、<br class="sp">お弁当が必要なこともあります。`;
-  prepNum('inclusion-num', 'この学校では', allergyKids, '人ほど');
+  document.getElementById('inclusion-lead').innerHTML = EN
+    ? `<strong>About 1 in 20</strong> children<br>are said to have a food allergy.<br>Often they need separate meals, or a packed lunch.`
+    : `学校に通う子どもの、<strong>およそ20人に1人</strong>。<br>食物アレルギーがあるといわれています。<br>ふだんは別の対応や、<br class="sp">お弁当が必要なこともあります。`;
+  prepNum('inclusion-num', EN ? 'At this school' : 'この学校では', allergyKids, EN ? ' children' : '人ほど');
 
   // reveal
   const res = document.getElementById('results');
   res.style.display = 'block';
-  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (!keepScroll) res.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   // progressive reveal: each section fades in as it scrolls into view
   res.querySelectorAll('.fade-section').forEach(el => {
@@ -2750,7 +2806,7 @@ function buildReport() {
 
   const schoolPart = state.school ? `${state.school} ／ ` : '';
   document.getElementById('rp-meta').textContent =
-    `作成日: ${dateStr} ／ ${schoolPart}条件: ${state.students.toLocaleString()}人 × ${freqLabel()} × ${periodLabel()}`;
+    `作成日: ${dateStr} ／ ${schoolPart}条件: ${state.students.toLocaleString()}人 × ${freqJa()} × ${periodJa()}`;
 
   document.getElementById('rp-water').textContent  = `約${fmt(r.water)} L`;
   document.getElementById('rp-water-c').textContent = `学校のプール約${fmtSoft(r.water / POOL_L)}杯分`;
@@ -2760,8 +2816,8 @@ function buildReport() {
   document.getElementById('rp-co2-c').textContent   = `木約${fmt(r.co2 / TREE_KG_YR)}本の年間吸収量`;
 
   document.getElementById('rp-msg').textContent =
-    `${state.students.toLocaleString()}人の子どもたちが通う${state.school || '学校'}で${freqLabel()}未来給食を選ぶと、` +
-    `${periodLabel()}で約${fmt(r.water)}リットルの水を未来へつなぐことができます。` +
+    `${state.students.toLocaleString()}人の子どもたちが通う${state.school || '学校'}で${freqJa()}未来給食を選ぶと、` +
+    `${periodJa()}で約${fmt(r.water)}リットルの水を未来へつなぐことができます。` +
     `これは学校のプール約${fmtSoft(r.water / POOL_L)}杯分にあたります。` +
     `子どもたちが大人になる未来へ、より多くの資源を残すための小さな一歩になります。`;
 }
@@ -2833,7 +2889,7 @@ function shareCard() {
     : `${state.students.toLocaleString()}人の子どもたち`;
   ctx.fillStyle = '#8a8270';
   ctx.font = `500 30px ${F}`;
-  ctx.fillText(`${who} × ${freqLabel()} × ${periodLabel()}`, W / 2, 225);
+  ctx.fillText(`${who} × ${freqJa()} × ${periodJa()}`, W / 2, 225);
 
   // dotted divider
   ctx.fillStyle = '#a8c49a';
@@ -2999,6 +3055,38 @@ function selectSpecialty(name) {
     preview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 }
+const I18N_EN = {"みんなの未来給食": "Mirai Kyushoku (School Lunch of the Future)", "未来シミュレーター": "Future Simulator", "地球にやさしい食は、<wbr>子どもにもやさしい。<br>月に1回の未来給食が、<br class=\"sp\">どんな未来につながっていくのか。<br>いっしょに、<wbr>すこし先の未来を<wbr>のぞいてみませんか。": "Food that is gentle to the planet is gentle to children, too.<br>What kind of future could a once-a-month plant-based school lunch lead to?<br>Let’s take a look at the future together.", "今すぐシミュレーションを試す ↓": "Try the simulation now ↓", "「未来給食」ってなに？": "What is “Mirai Kyushoku”?", "月に1回、動物性の食材を使わずに、<br class=\"sp\"><span class=\"hl\">100%植物性の食材</span>でつくる給食です。<br>卵や乳など、<br class=\"sp\">アレルギーの原因となりやすい<wbr>食材にも<wbr>配慮した献立で、<br class=\"pc\"><br class=\"sp\">宗教や家庭の方針がちがう子も、<br class=\"sp\">みんなが同じ食卓を囲めます。": "Once a month, a school lunch made with <span class=\"hl\">100% plant-based ingredients</span>, using no animal products.<br>The menu is also mindful of common allergens such as eggs and milk, so that children with different religions or family values can all share the same table.", "そして植物性の給食は、<br class=\"sp\">水・大地・気候への負担が小さい、<br class=\"sp\"><span class=\"hl\">地球にやさしい一食</span>でもあります。<br>だからこそ、<wbr>子どもたちの<wbr>「選べる未来」の<wbr>選択肢に、<br class=\"sp\">この一食を加えたいと考えています。": "A plant-based meal is also <span class=\"hl\">gentle on the planet</span> — lighter on water, land and climate.<br>That’s why we want to add this one meal to the choices children have, for a future where they can choose.", "韓国・アメリカ・ポルトガルなど、<wbr>世界でも広がっています(くわしくは結果のあとで)": "It’s spreading worldwide — Korea, the USA, Portugal and more (details after your results)", "「<span class=\"kw\">未来</span>」をえがく、じゅんび": "Getting ready to picture the <span class=\"kw\">future</span>", "〜 2つの質問にこたえてください 〜": "— Just answer two questions —", "あなたの学校には、何人の子どもたちがいますか？": "How many children are at your school?", "人の子どもたち": "children", "つまみを動かすと、人数を選べます": "Drag the slider to choose the number", "学校名や正確な人数がわからなくても、<wbr>だいたいの人数でシミュレーションできます。": "Even if you don’t know the exact number or school name, an approximate number works fine.", "未来給食を、どれくらい体験してみますか？": "How often would you try Mirai Kyushoku?", "2ヶ月に1回": "Once every 2 months", "月に1回": "Once a month", "月に2回": "Twice a month", "3ヶ月": "3 months", "半年": "6 months", "1年間": "1 year", "未来をのぞいてみる": "See into the future", "結果は、学校でそのまま使える「未来給食レポート」として印刷・保存できます。": "Your results can be printed or saved as a “Mirai Kyushoku Report” ready to use at school.", "すこし先の、<br class=\"sp\">ある日の給食時間": "A lunchtime, a little while from now", "〜 こんな風景が、ひろがっているかもしれません 〜": "— A scene like this may be unfolding —", "その日は、<strong>アレルギーのある子</strong>も、<br class=\"sp\"><strong>宗教や文化のちがいがある子</strong>も、<br>みんなと同じメニューを<wbr><strong>「選べる」日</strong>です。": "On this day, <strong>children with allergies</strong> and <strong>children with different religions or cultures</strong> can all <strong>choose the same menu</strong> as everyone else.", "みんなが大好きな<span class=\"em-green\">カレーやハンバーグ</span>も、<br class=\"sp\"><span class=\"em-green\">植物性の食材</span>で。<br>同じ食卓で「おいしいね」と<wbr><strong>笑顔</strong>がならびます。": "Everyone’s favourites — <span class=\"em-green\">curry and hamburg steak</span> — made with <span class=\"em-green\">plant-based ingredients</span>.<br>At the same table, <strong>smiles</strong> line up with a “Yum!”", "そしてこの一食は、<br class=\"sp\">子どもたちが大人になる<strong>未来の地球</strong>にも、<br><strong>小さな贈りもの</strong>を残しています。": "And this one meal leaves a <strong>small gift</strong> for the <strong>future Earth</strong> these children will grow up on.", "その贈りものを、くわしく見てみる": "See those gifts in detail", "未来へつながる、<br class=\"sp\"><span class=\"kw\">4つの贈りもの</span>": "<span class=\"kw\">Four gifts</span> for the future", "未来へつながる水資源": "Water resources for the future", "のびのびと育つ大地": "Land that grows freely", "すんだ空気と、おだやかな気候": "Clean air and a gentle climate", "みんなで囲む、同じ食卓": "One table, shared by all", "みんなと同じ給食を「選べる」日が<br class=\"sp\">少しずつ増えていったら、<br>その分だけ、子どもたちの笑顔も<wbr>増えていく。": "As the days when every child can “choose” the same lunch slowly grow,<br>so too will the children’s smiles.", "※ 食物アレルギー有病率の調査より(約5%)": "* Based on food allergy prevalence studies (about 5%)", "では、<span class=\"kw\">どんな給食</span>が<br class=\"sp\">できるでしょう？": "So, <span class=\"kw\">what lunch</span> could we make?", "〜 好きな野菜や地域の特産品を入れてみてください 〜": "— Try entering a favourite vegetable or local specialty —", "結果をシェアする": "Share results", "学校レポートを保存": "Save school report", "導入を相談する": "Ask about getting started", "私たちが目指しているのは、「全員が同じ食事を選ぶこと」ではありません。": "Our goal is not for everyone to eat the same meal.", "目指しているのは、「選べること」です。": "Our goal is the freedom to choose.", "食べるかどうかは、子どもや家庭が選べる<br>そんな未来です。<br>植物性メニューは、ゴールではなく、子どもたちの選択肢を広げるための一つの方法です。": "Whether to eat it is up to each child and family — that is the future we picture.<br>A plant-based menu is not the goal, but one way to widen the choices children have.", "未来給食が育てる、<br class=\"sp\">6つの芽": "Six seeds Mirai Kyushoku nurtures", "〜 環境だけではない、たいせつな価値 〜": "— Important values, not only the environment —", "健康": "Health", "野菜・豆・穀物を中心とした、心と体にやさしい一食。": "A meal of vegetables, beans and grains, gentle on body and mind.", "多様性": "Diversity", "アレルギー・宗教・価値観など、様々な背景への対応につながる。": "Helps respond to many backgrounds — allergies, religion, values and more.", "環境": "Environment", "水・大地・空気。未来の地球に、すこしずつ資源をのこす。": "Water, land and air — leaving a little more for the future Earth.", "思いやり": "Compassion", "アレルギーや宗教の違いで「別メニュー」だった子が、同じ食卓につける。その一日が、思いやりを育てます。": "A child once given a “separate menu” for allergies or religion can join the same table. That day nurtures compassion.", "日本の食文化": "Japanese food culture", "精進料理から続く、自然の恵みに感謝する食の知恵を学ぶ。": "Learning the wisdom of shojin cuisine — gratitude for nature’s gifts.", "食育": "Food education", "「なぜこの献立？」という一言が、食・環境・文化の授業へとつながります。": "A simple “Why this menu?” opens into lessons on food, the environment and culture.", "2030年までの世界共通目標": "Global goals to reach by 2030", "SDGsへの貢献": "Contributing to the SDGs", "SDGsは、世界が2030年までに達成を目指す目標です。<br class=\"sp\">残された時間は、もう長くありません。<br>未来給食は、特に6つの目標につながっています。": "The SDGs are goals the world aims to reach by 2030 — and time is running short.<br>Mirai Kyushoku connects to six of them in particular.", "飢餓をゼロに": "Zero Hunger", "世界の穀物の約3分の1は家畜の飼料に。植物性の給食は、食べものを人に直接とどける選択です。": "About one third of the world’s grain goes to feed livestock. A plant-based lunch is a choice to bring food directly to people.", "すべての人に健康と福祉を": "Good Health and Well-being", "野菜・豆・穀物が中心の一食は、子どもたちの生涯にわたる健康的な食習慣の土台になります。": "A meal centred on vegetables, beans and grains builds a foundation for lifelong healthy eating.", "安全な水とトイレを世界中に": "Clean Water and Sanitation", "世界では今も約20億人が安全な水を使えません。給食1食の選択が、大切な水を未来にのこします。": "Around 2 billion people still lack safe water. One meal’s choice helps save precious water for the future.", "つくる責任 つかう責任": "Responsible Consumption and Production", "何をつくり、何を食べるか。給食は、子どもたちが毎日体験できるいちばん身近な「消費の学び」です。": "What we make and what we eat — school lunch is the most everyday lesson in mindful consumption.", "気候変動に具体的な対策を": "Climate Action", "世界の温室効果ガスの約3分の1は食に関わるもの。食の選択は、子どもにもできる気候変動対策です。": "About a third of global greenhouse gases relate to food. Food choices are climate action even children can take.", "陸の豊かさも守ろう": "Life on Land", "世界の農地の約8割は畜産のために使われています。植物性の一食は、土地を森や自然に還す一歩です。": "About 80% of farmland is used for livestock. A plant-based meal is a step toward returning land to forest and nature.", "学校・自治体のSDGs教育や総合的な学習の時間とも接続できます。": "It can also connect to SDGs education and integrated-studies lessons in schools and municipalities.", "出典: 各数値は国連食糧農業機関(FAO)、WHO・ユニセフ、気候変動に関する政府間パネル(IPCC)、オックスフォード大学の研究(Poore &amp; Nemecek, 2018年, Science誌掲載)などの公表データにもとづく概算です。": "Sources: figures are approximations based on published data from the FAO, WHO/UNICEF, the IPCC, and the University of Oxford study (Poore &amp; Nemecek, 2018, Science).", "じつは、日本の伝統でもあります": "In fact, it is also a Japanese tradition", "植物性の食事は、日本人にとって<wbr>新しいものではありません。<br class=\"pc\">飛鳥時代の675年、天皇の命により<wbr>牛や馬などの肉食が禁じられて以来、<br class=\"pc\">明治時代に解禁されるまで──": "Plant-based eating is nothing new in Japan. From 675 CE, when an imperial decree banned eating animals such as cattle and horses, until it was lifted in the Meiji era —", "約1200年<small> ものあいだ</small>": "about 1,200 years<small></small>", "日本では肉を避ける食文化が<wbr>受け継がれてきました。<br class=\"pc\">その中で育まれたのが、<span class=\"sj-em\">精進料理</span>です。<br class=\"pc\"><span class=\"sj-em\">命を奪わない、食べものを無駄にしない</span>──<br class=\"sp\">自然の恵みに感謝するその心は、<br class=\"sp\">豆腐やお麩、昆布や椎茸のおだしとともに、<br class=\"sp\">いまの和食にも生きています。": "a food culture of avoiding meat was passed down. From it grew <span class=\"sj-em\">shojin cuisine</span>.<br><span class=\"sj-em\">Take no life; waste no food</span> — that spirit of gratitude for nature lives on in today’s Japanese cooking, in tofu, fu, and broths of kombu and shiitake.", "未来給食は、この日本の伝統の知恵を、<br class=\"sp\">子どもたちの未来につなぐ取り組みでもあります。": "Mirai Kyushoku is also a way to carry this Japanese wisdom forward into children’s futures.", "日本でも、<br class=\"sp\">「<span class=\"kw\">選べる給食</span>」が<br class=\"sp\">始まっています": "In Japan too, “<span class=\"kw\">lunch you can choose</span>” is beginning", "〜 すこし先をゆく、日本の学校・園 〜": "— Japanese schools and nurseries a step ahead —", "東京都": "Tokyo", "八王子市立浅川小学校(2021年)": "Asakawa Elementary, Hachioji (2021)", "きっかけ: 誰も置き去りにしない食卓": "Why: a table that leaves no one out", "公立小学校で、動物性食材を使わない月1回の「エブリワン給食」を実施。ふだんはアレルギーで給食の「おかわりジャンケン」に入れなかった子も、この日はみんなと一緒に手をあげられる。誰も置き去りにしない一食が生まれました。": "This public elementary school holds a monthly “Everyone’s Lunch” with no animal ingredients. A child who, because of allergies, usually couldn’t join the “seconds” rock-paper-scissors could raise their hand with everyone — a meal that leaves no one behind.", "兵庫県": "Hyogo", "姫路市の保育園「One Table Day」(2022年〜)": "A Himeji nursery’s “One Table Day” (since 2022)", "きっかけ: みんなで同じ食卓を囲む喜び": "Why: the joy of sharing one table", "動物性食材を使わない給食を月1回提供。ふだんはアレルギーで別のテーブルだった子も、この日はみんなと同じ食卓で一緒に食べられることを、前日から楽しみにしていたそうです。": "A monthly lunch with no animal ingredients. A child who usually sat at a separate table for allergies looked forward, from the day before, to eating at the same table as everyone.", "千葉県": "Chiba", "匝瑳市・市内全13の小中学校(2026年)": "Sosa City — all 13 schools (2026)", "きっかけ: 地域の歴史と食文化の教育": "Why: teaching local history and food culture", "市制20周年を記念して、市内すべての小中学校で精進料理の給食を一斉に提供。給食の時間に全クラスで食育動画を視聴する、ICTを活用した食育として、地域の歴史と食文化を学ぶ機会になりました。": "To mark the city’s 20th anniversary, every school served a shojin-style lunch on the same day. With every class watching a food-education video, it became an ICT-supported lesson in local history and food culture.", "小さな園から、市内すべての学校まで。<br>日本でも、いろいろな形で広がりはじめています。": "From a single nursery to every school in a city — in Japan, it is spreading in many forms.", "世界でも、<br class=\"sp\">「<span class=\"kw\">選べる給食</span>」が<br class=\"sp\">広がっています": "Around the world, “<span class=\"kw\">lunch you can choose</span>” is spreading", "〜 日本のすこし先をゆく、世界の国々 〜": "— Countries a step ahead of Japan —", "韓国": "Korea", "ソウルなどの「グリーン給食の日」(2021年〜)": "Seoul’s “Green Lunch Day” (since 2021)", "きっかけ: 気候変動への対応・環境教育": "Why: climate response & environmental education", "気候変動への危機感をきっかけに、ソウルなどの教育委員会が学校給食に植物性メニューの日を導入。月に1〜2回、地球を守るための食の選択を、子どもたちが給食の時間に体験しながら学んでいます。": "Out of concern for climate change, education boards in Seoul and elsewhere introduced plant-based menu days. Once or twice a month, children learn about food choices that protect the planet, right at lunchtime.", "アメリカ": "USA", "ニューヨーク市「Plant-Powered Friday」(2023年〜)": "New York City’s “Plant-Powered Friday” (since 2023)", "きっかけ: 子どもたちの健康": "Why: children’s health", "植物性の食事で自身の健康を取り戻した市長の体験をきっかけに、市内の公立学校で「植物性の金曜日」がスタート。約100万人の子どもたちが、毎週金曜日に植物性中心の給食を楽しんでいます。": "Inspired by a mayor who restored his own health with plant-based food, the city’s public schools began “Plant-Powered Fridays.” About one million children now enjoy a plant-based lunch every Friday.", "ポルトガル": "Portugal", "法律で守られた「選べる権利」(2017年)": "A “right to choose” protected by law (2017)", "きっかけ: 市民の声と多様性の尊重": "Why: citizens’ voices & respect for diversity", "「選びたくても選べない」という市民の声がきっかけ。約1万5千人の署名が集まり、公立学校や病院などの食堂に植物性メニューの提供を義務づける法律が成立。「選べること」が、国の制度として保障されました。": "Sparked by citizens who “wanted to choose but couldn’t,” a petition of about 15,000 signatures led to a law requiring public canteens — schools, hospitals and more — to offer a plant-based option. The freedom to choose became guaranteed by law.", "多くの国では、<br class=\"sp\">「みんな同じ」から<br class=\"sp\">「みんなが食べられる」へと、<br>少しずつ変化が始まっています。": "In many countries, a shift is beginning — from “everyone the same” to “everyone can eat.”", "アレルギーのことも、考えています": "We think about allergies, too", "食物アレルギーの主な原因の多くは、<br class=\"sp\">卵・牛乳・魚など「動物性の食材」です。<br>未来給食は動物性食材を使わないので──": "Many of the main causes of food allergies — eggs, milk, fish — are animal-based.<br>Because Mirai Kyushoku uses no animal ingredients —", "約70%": "≈70%", "が動物性": "are animal-based", "主な原因を、はじめから避けられます。": "the main causes are avoided from the start.", "<i style=\"background:#5e8c52\"></i>避けられる … 卵・牛乳・魚卵・魚・甲殻類": "<i style=\"background:#5e8c52\"></i>Avoided … eggs, milk, fish roe, fish, shellfish", "<i style=\"background:#e2cfa8\"></i>注意が必要 … 小麦・ピーナッツ・そば・ナッツ など": "<i style=\"background:#e2cfa8\"></i>Still take care … wheat, peanuts, buckwheat, nuts, etc.", "すべてのアレルギーに対応できるわけではありません。<br>それでも、より多くの子が同じ食卓を囲める<wbr>可能性が広がります。": "It cannot cover every allergy. Even so, it widens the chance for more children to share the same table.", "出典: フードダイバーシティ株式会社(n=2,954)": "Source: Food Diversity, Inc. (n=2,954)", "栄養のこと、ご安心ください": "About nutrition — please rest assured", "必要なのは“お肉”ではなく、タンパク質。海外の栄養士団体の見解も。": "What we need isn’t “meat” but protein — backed by dietitian associations abroad.", "くわしく見る": "Read more", "必要なのは“お肉”そのものではなく、<br class=\"sp\"><span class=\"aq\">タンパク質</span>。": "What we need is not “meat” itself, but <span class=\"aq\">protein</span>.", "大豆や豆類は、子どもの成長に必要な<wbr>良質なタンパク源です。": "Soybeans and pulses are high-quality protein for growing children.", "必要なのは“牛乳”そのものではなく、<br class=\"sp\"><span class=\"aq\">カルシウム</span>。": "What we need is not “milk” itself, but <span class=\"aq\">calcium</span>.", "小松菜やひじき、お豆腐にも、<wbr>カルシウムは豊富に含まれています。": "Komatsuna greens, hijiki seaweed and tofu are all rich in calcium.", "アメリカ・カナダ・イギリスの栄養士の専門家団体も、「きちんと計画された植物性の食事は、成長期を含むあらゆる年代で健康的」という見解を発表しています。お肉や牛乳を否定する話ではありません。月に1回、栄養の取り方の選択肢を少しだけ広げる──それだけのことなのです。国内の実施校でも、学校給食の栄養基準を満たす献立で提供されています。": "Dietetic associations in the USA, Canada and the UK state that well-planned plant-based diets are healthy for all ages, including childhood. This isn’t about rejecting meat or milk — it’s simply widening the options a little, once a month. At schools already doing it, menus meet national school-lunch nutrition standards.", "大豆ミートという、たのもしい味方": "Soy meat — a reliable ally", "子どもにも、給食の現場にも。うれしいことがいくつもあります。": "Good news for both children and kitchen staff.", "子どもたちに": "For children", "カレーやハンバーグなど、いつもの定番メニューがそのまま作れる": "Everyday favourites like curry and hamburg steak can be made as usual", "お肉にはほとんどない食物繊維がとれる": "Provides fibre, which meat has almost none of", "実際の小学校では、子どもたちが気づかず「おいしい」と完食": "At real schools, children finished every bite without noticing the difference", "給食の現場に": "For the kitchen", "精肉より安価な場合が多く、食材費を抑えられる": "Often cheaper than meat, helping control food costs", "乾燥品は常温で長期保存でき、在庫管理が楽": "Dried products keep at room temperature, easing stock management", "生肉のような厳格な温度管理・交差汚染対策が不要": "No strict temperature control or cross-contamination measures like raw meat", "<span class=\"q-mark\">Q.</span>子どもに無理に食べさせることになりませんか？": "<span class=\"q-mark\">Q.</span>Will children be forced to eat it?", "いいえ。私たちが目指しているのは<b>「選べること」</b>です。希望制(食べるかどうかを子どもや家庭が選べる形)から始めることができます。アレルギーや宗教上の理由で「自分だけ別メニュー」だった子が、みんなと同じものを選べるようになる日でもあります。": "No. Our goal is <b>the freedom to choose</b>. You can start as an opt-in, where each child or family decides whether to eat it. It is also a day when a child who used to have a “separate menu” for allergies or religion can choose the same meal as everyone.", "<span class=\"q-mark\">Q.</span>特定の考え方の押し付けになりませんか？": "<span class=\"q-mark\">Q.</span>Isn’t it pushing a particular belief?", "未来給食の目的は、<b>誰もが安心して食べられる給食</b>と、食から世界を考える<b>食育</b>です。学習指導要領が掲げる「多様な他者の価値を尊重する」学びを、給食という生活の場で実践するものであり、特定の食生活をすすめるものではありません。": "The aim is <b>a lunch everyone can eat with peace of mind</b> and <b>food education</b> that considers the world through food. It puts into practice the national curriculum’s value of “respecting diverse others,” not promoting any particular diet.", "<span class=\"q-mark\">Q.</span>おいしくないのでは？子どもが残しませんか？": "<span class=\"q-mark\">Q.</span>Won’t it taste bad and be left uneaten?", "献立は、カレーやハンバーグ、麻婆豆腐など<b>子どもが大好きな定番メニュー</b>が中心です。実際に導入した小学校では、子どもたちはお肉との違いに気づかず「おいしい、おいしい」と食べたと報告されています。": "Menus centre on <b>children’s favourites</b> like curry, hamburg steak and mapo tofu. At schools that have tried it, children reportedly ate happily, never noticing the difference from meat.", "このシミュレーターについて": "About this simulator", "ここに表示される数値は、オックスフォード大学の研究(Poore &amp; Nemecek, 2018年, Science誌掲載)をはじめとする、食品ごとの水使用量・温室効果ガス排出量・土地利用に関する国際的な環境研究をもとにした概算です。": "The figures shown are approximations based on international environmental research on per-food water use, greenhouse-gas emissions and land use, including the University of Oxford study (Poore &amp; Nemecek, 2018, Science).", "実際の効果は、献立の内容、食材の産地、地域の給食事情によって変わります。正確な予測ではなく、「およそこのくらいの規模」を実感していただくための教育用の目安としてご活用ください。": "Actual effects vary with the menu, where ingredients come from, and local conditions. These are not precise predictions but an educational guide to sense the rough scale.", "シミュレーションの前提:植物性中心の給食1食あたり、水 約200リットル・温室効果ガス 約0.8kg・土地 約15㎡の節約と仮定しています。": "Assumptions: per plant-based meal, savings of about 200 L of water, 0.8 kg of greenhouse gases, and 15 m² of land.", "未来の給食を、<br class=\"sp\">一緒につくりませんか？": "Shall we build the future of school lunch together?", "どんな方も、できるところから。<br>小さな一歩が、<br class=\"sp\">子どもたちの選べる未来に<wbr>つながります。": "Anyone can start where they are. A small step leads to a future where children can choose.", "公式サイトを見る": "Visit the website", "Instagramをフォロー": "Follow on Instagram", "メールで相談する": "Contact us by email", "給食は、未来をつくる。<br>\n  みんなの未来給食<br class=\"sp\">\n  ─ 誰も取り残さない<wbr>給食の未来を目指して ─\n  <br><span style=\"font-size:10px; color:#999;\">試作版(開発中)─ 内容は今後変わることがあります</span>": "School lunch shapes the future.<br>\n  Mirai Kyushoku<br class=\"sp\">\n  — toward a future of school meals that leave no one behind —\n  <br><span style=\"font-size:10px; color:#999;\">Prototype (in development) — content may change</span>", "あなたの学校の未来を計算しています…": "Calculating your school’s future…"};
+
+// ── 言語切り替え ──
+const I18N_SEL = ".hero .eyebrow, .hero h1, .hero .subtitle, .hero-cta, .intro-title, .intro-card p, .sec-text, .sec-sub, .step-q, .num-suffix, .slider-note, #freq-pills .pill, #period-pills .pill, .go-btn, #input-card + p, .scene-story p, .scene-more, .impact-card h3, .inclusion-close, .inc-src, .cb-line1, .cb-line2, .cb-line3, .value-card h4, .value-card p, .sdg-badge, .sdg-box h3, .sdg-lead, .sdg-t, .sdg-d, .sdg-note, .shojin-box h3, .shojin-box > p, .shojin-years, .world-flag, .world-body h4, .w-why, .world-body p, .world-note, .allergy-box h3, .allergy-lead, .dc-big, .dc-small, .donut-cap, .legend-item, .allergy-note, .allergy-source, .fold-title, .fold-teaser, .fold-cue, .assure-quote, .assure-sub, .assure-note, .benefit-col h4, .benefit-col li, .faq-box summary, .faq-a, .about h3, .about p, .cta-box h3, .cta-sub, .cta-btn, footer";
+LANG = (localStorage.getItem('lang') === 'en') ? 'en' : 'ja';
+function applyLang(lang) {
+  LANG = lang;
+  document.documentElement.lang = lang;
+  document.querySelectorAll(I18N_SEL).forEach(el => {
+    if (el.__ja === undefined) el.__ja = el.innerHTML;
+    const key = el.__ja.trim();
+    if (lang === 'en' && I18N_EN[key] !== undefined) el.innerHTML = I18N_EN[key];
+    else el.innerHTML = el.__ja;
+  });
+  const sn = document.getElementById('school-name');
+  if (sn) { if (sn.__ja === undefined) sn.__ja = sn.placeholder; sn.placeholder = (lang === 'en') ? 'School / nursery name (optional)' : sn.__ja; }
+  // 英語では献立シミュレーターを非表示
+  const mb = document.getElementById('menu-block');
+  if (mb) {
+    mb.style.display = (lang === 'en') ? 'none' : '';
+    const mh = mb.previousElementSibling;
+    if (mh && mh.classList.contains('sec-head')) mh.style.display = (lang === 'en') ? 'none' : '';
+  }
+  const tb = document.getElementById('lang-toggle');
+  if (tb) tb.textContent = (lang === 'en') ? '日本語' : 'EN';
+  // 動的部分の再描画
+  if (typeof results !== 'undefined' && results) showResults(true);
+  if (typeof window.refreshSliderHint === 'function') window.refreshSliderHint();
+  localStorage.setItem('lang', lang);
+}
+function toggleLang() { applyLang(LANG === 'en' ? 'ja' : 'en'); }
+applyLang(LANG);
 </script>
 </body>
 </html>
