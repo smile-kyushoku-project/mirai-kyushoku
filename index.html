@@ -1245,7 +1245,7 @@
         <span class="num-suffix">人の子どもたち</span>
       </div>
       <div class="slider-wrap">
-        <input type="range" id="students-slider" min="0" max="46" value="20" aria-label="子どもの人数">
+        <input type="range" id="students-slider" min="1" max="2000" step="1" value="500" aria-label="子どもの人数">
         <div class="slider-hint" id="slider-hint">つまみを動かすと、人数を選べます</div>
       </div>
       <div class="num-input-row" style="margin-top:16px">
@@ -2514,49 +2514,45 @@ document.querySelectorAll('#period-pills .pill').forEach(p => {
   });
 });
 
-// ── Student slider (touch to play) ─────────────────────────
-const SLIDER_STEPS = [
-  10,20,30,40,50,60,70,80,90,100,120,140,160,180,200,250,300,350,400,450,
-  500,550,600,700,800,900,1000,1200,1400,1600,1800,2000,2500,3000,3500,
-  4000,4500,5000,6000,7000,8000,9000,10000
-];
+// ── Student slider (1人単位) ───────────────────────────────
+const SLIDER_MIN = 1;
+const SLIDER_MAX = 2000;
 function sizeWord(n) {
+  if (n < 20)   return 'すこし小さな園・学校';
   if (n < 100)  return 'ちいさな園・学校くらい';
   if (n < 300)  return '小学校くらいの人数';
   if (n < 600)  return '中くらいの規模の学校';
   if (n < 1000) return '大きめの学校';
-  if (n < 3000) return 'とても大きな学校';
-  return '地域ぐるみの取り組み';
+  return 'とても大きな学校・地域ぐるみ';
 }
 (function () {
   const slider = document.getElementById('students-slider');
   const numInput = document.getElementById('students');
   const hint = document.getElementById('slider-hint');
   if (!slider) return;
-  slider.max = String(SLIDER_STEPS.length - 1);
+  slider.min = String(SLIDER_MIN);
+  slider.max = String(SLIDER_MAX);
+  slider.step = '1';
 
-  function nearestIndex(v) {
-    let best = 0, bd = Infinity;
-    SLIDER_STEPS.forEach((s, i) => { const d = Math.abs(s - v); if (d < bd) { bd = d; best = i; } });
-    return best;
-  }
+  const clamp = v => Math.min(SLIDER_MAX, Math.max(SLIDER_MIN, v));
   function updateHint(n) {
     hint.innerHTML = `<b>${n.toLocaleString()}人</b>の学校 ── ${sizeWord(n)}`;
   }
-  // slider drag → number
+  // slider drag → number (1人単位)
   slider.addEventListener('input', () => {
-    const n = SLIDER_STEPS[parseInt(slider.value)];
+    const n = parseInt(slider.value);
     numInput.value = n;
     updateHint(n);
   });
   // number typing → slider
   numInput.addEventListener('input', () => {
     const n = parseInt(numInput.value) || 0;
-    slider.value = String(nearestIndex(n));
+    slider.value = String(clamp(n || SLIDER_MIN));
     if (n > 0) updateHint(n);
   });
   // init
-  slider.value = String(nearestIndex(parseInt(numInput.value) || 500));
+  const start = clamp(parseInt(numInput.value) || 500);
+  slider.value = String(start);
   updateHint(parseInt(numInput.value) || 500);
 })();
 
