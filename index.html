@@ -417,6 +417,7 @@
   .impact-card.land  h3 { color: var(--earth); }
   .impact-card.co2   h3 { color: var(--green-deep); }
   .impact-card.inclusion h3 { color: var(--terra); }
+  .impact-card.inclusion .impact-lead { font-size: 0.92rem; line-height: 2; }
   .impact-card.inclusion .impact-lead strong { color: #c2664f; }
   .inclusion-close {
     font-size: 0.96rem; line-height: 2.1; font-weight: 700;
@@ -1638,7 +1639,7 @@
       <h3>みんなで囲む、同じ食卓</h3>
       <p class="impact-lead" id="inclusion-lead">—</p>
       <div class="impact-numline" id="inclusion-num">—</div>
-      <p class="inclusion-close">この子たちも、みんなと同じ給食を<wbr>「選べる」日が、<br class="sp">少しずつ増えていけたら。</p>
+      <p class="inclusion-close">みんなと同じ給食を「選べる」日が<br class="sp">少しずつ増えていったら、<br>その分だけ、子どもたちの笑顔も<wbr>増えていく。</p>
       <p class="inc-src">※ 食物アレルギー有病率の調査より(約5%)</p>
     </div>
 
@@ -2701,7 +2702,7 @@ function showResults() {
   // inclusion — 4th gift (awareness number, not a "solved" count)
   const allergyKids = state.students * ALLERGY_RATE;
   document.getElementById('inclusion-lead').innerHTML =
-    `学校に通う子どもの、<strong>およそ20人に1人</strong>。<br>食物アレルギーがあるといわれています。<br>ふだんは別の対応や、お弁当が必要なことも。`;
+    `学校に通う子どもの、<strong>およそ20人に1人</strong>。<br>食物アレルギーがあるといわれています。<br>ふだんは別の対応や、<br class="sp">お弁当が必要なこともあります。`;
   prepNum('inclusion-num', 'この学校では', allergyKids, '人ほど');
 
   // reveal
