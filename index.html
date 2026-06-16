@@ -1174,6 +1174,17 @@
     color: var(--green-deep);
   }
   #report-page .rp-note { font-size: 8pt; color: var(--ink-soft); margin-top: 14px; border-top: 1pt solid var(--line); padding-top: 8px; }
+
+  /* ── 献立シミュレーター(スマホ縦並び) ── */
+  @media (max-width: 480px) {
+    #menu-block .num-input-row > div:first-child {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    #menu-block input[type=text] {
+      max-width: 100%;
+    }
+  }
 </style>
 </head>
 <body>
@@ -1252,6 +1263,70 @@
         <button class="pill" data-period="3">3ヶ月</button>
         <button class="pill" data-period="6">半年</button>
         <button class="pill active" data-period="12">1年間</button>
+      </div>
+    </div>
+
+    <!-- ── 献立シミュレーター（新規追加） ── -->
+    <div class="step-block" id="menu-block">
+      <div class="step-label">
+        <span class="step-num">3</span>
+        <span class="step-q">好きな野菜や、地域の特産品を教えてください（任意）</span>
+      </div>
+      <div class="num-input-row" style="flex-direction:column;align-items:flex-start;gap:8px;">
+        <div style="display:flex;gap:10px;align-items:center;width:100%;">
+          <input
+            type="text"
+            id="ingredient-input"
+            placeholder="例：小松菜、れんこん、いちご"
+            maxlength="30"
+            style="width:100%;max-width:280px;padding:10px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:0.95rem;font-family:inherit;color:var(--ink);background:var(--paper);transition:border-color 0.2s;"
+            oninput="previewMenu(this.value)"
+            onfocus="this.style.borderColor='var(--green-soft)'"
+            onblur="this.style.borderColor='var(--line)'"
+          >
+          <button
+            onclick="previewMenu(document.getElementById('ingredient-input').value)"
+            style="flex-shrink:0;background:var(--green-pale);border:1.5px solid var(--green-soft);border-radius:999px;padding:9px 20px;font-size:0.88rem;font-weight:700;font-family:inherit;color:var(--green-deep);cursor:pointer;">
+            献立を見る
+          </button>
+        </div>
+        <p style="font-size:0.75rem;color:var(--ink-soft);padding-left:2px;">
+          関東地方の特産品に対応しています（順次拡大予定）
+        </p>
+      </div>
+
+      <!-- 献立プレビュー表示エリア -->
+      <div id="menu-preview" style="display:none;opacity:0;transition:opacity 0.4s ease;margin-top:18px;background:var(--green-pale);border:1.5px solid var(--green-soft);border-radius:var(--radius);padding:22px 24px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <span id="menu-prefecture" style="font-size:0.75rem;font-weight:700;color:var(--green-deep);background:var(--paper);border:1.5px solid var(--green-soft);border-radius:999px;padding:2px 14px;"></span>
+          <span style="font-size:0.88rem;font-weight:700;color:var(--green-deep);">の特産品を使った未来給食</span>
+        </div>
+        <p style="font-size:0.82rem;font-weight:700;color:var(--ink-soft);margin-bottom:10px;letter-spacing:0.08em;">本日の献立</p>
+        <ul id="menu-dishes" style="list-style:none;margin-bottom:14px;"></ul>
+        <p id="menu-comment" style="font-size:0.88rem;line-height:2;color:var(--ink);background:var(--paper);border-radius:10px;padding:12px 16px;"></p>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+          <button
+            onclick="shareMenu()"
+            style="display:inline-flex;align-items:center;gap:6px;background:var(--terra);border:none;border-radius:999px;padding:9px 22px;font-size:0.85rem;font-weight:700;font-family:inherit;color:#fff;cursor:pointer;">
+            この献立をシェアする
+          </button>
+          <a href="mailto:japan@animalallianceasia.org?subject=未来給食の献立について相談したい"
+            style="display:inline-flex;align-items:center;gap:6px;background:var(--paper);border:1.5px solid var(--green-soft);border-radius:999px;padding:9px 22px;font-size:0.85rem;font-weight:700;font-family:inherit;color:var(--green-deep);text-decoration:none;cursor:pointer;">
+            学校に提案する
+          </a>
+        </div>
+        <p id="menu-source" style="font-size:0.68rem;color:var(--ink-soft);margin-top:12px;"></p>
+        <p style="font-size:0.68rem;color:var(--ink-soft);margin-top:4px;">
+          ※ この献立はイメージです。実際の提供にあたっては学校栄養士と相談の上、文部科学省の学校給食摂取基準に基づいた献立を作成してください。アレルギーのあるお子さんは個別にご確認ください。
+        </p>
+      </div>
+
+      <!-- 未対応の食材のとき -->
+      <div id="menu-notfound" style="display:none;margin-top:14px;padding:14px 18px;background:var(--cream-deep);border-radius:12px;">
+        <p style="font-size:0.85rem;color:var(--ink-soft);line-height:2;">
+          まだ対応していない食材です。対応地域を順次拡大しています。<br>
+          <span style="font-size:0.78rem;">あなたの地域の特産品をぜひ<a href="mailto:japan@animalallianceasia.org" style="color:var(--green-deep);">教えてください</a>。</span>
+        </p>
       </div>
     </div>
 
@@ -2069,6 +2144,75 @@
 </div>
 
 <script>
+// ── 献立テンプレートデータ（関東版・フェーズ1） ──
+const menuTemplates = [
+  {
+    keywords: ["れんこん", "蓮根", "レンコン"],
+    prefecture: "茨城県",
+    label: "れんこん",
+    dishes: ["蓮根ハンバーグ（大豆ミート入り）", "ひじきの煮物", "白みそ汁", "雑穀ごはん"],
+    comment: "シャキシャキのれんこんが食感のアクセント。茨城が誇る特産品を、みんなで味わう一食。",
+    source: "農林水産省 地場産物活用推進事業・全国学校給食協会 参考"
+  },
+  {
+    keywords: ["いちご", "苺", "とちおとめ", "とちあいか"],
+    prefecture: "栃木県",
+    label: "いちご（とちおとめ）",
+    dishes: ["いちごソースの蒸しパン", "豆乳スープ", "ひよこ豆のサラダ", "ごはん"],
+    comment: "給食にいちごが登場！とちおとめの甘酸っぱさが、いつもの給食をちょっと特別にします。",
+    source: "農林水産省 地場産物活用推進事業・全国学校給食協会 参考"
+  },
+  {
+    keywords: ["こんにゃく", "コンニャク", "蒟蒻"],
+    prefecture: "群馬県",
+    label: "こんにゃく",
+    dishes: ["こんにゃくの甘辛炒め", "根菜みそ汁（大豆ミート入り）", "小松菜のごま和え", "ごはん"],
+    comment: "群馬が全国一の生産量を誇るこんにゃく。低カロリーで食物繊維たっぷりの一食。",
+    source: "農林水産省 地場産物活用推進事業・全国学校給食協会 参考"
+  },
+  {
+    keywords: ["深谷ねぎ", "ねぎ", "ネギ", "長ねぎ"],
+    prefecture: "埼玉県",
+    label: "深谷ねぎ",
+    dishes: ["深谷ねぎのかき揚げ", "けんちん汁", "ほうれん草のおひたし", "ごはん"],
+    comment: "甘くてとろける深谷ねぎ。冬においしさが増す、埼玉の誇る伝統野菜が主役の献立。",
+    source: "農林水産省 地場産物活用推進事業・全国学校給食協会 参考"
+  },
+  {
+    keywords: ["落花生", "らっかせい", "ピーナッツ", "ぴーなっつ"],
+    prefecture: "千葉県",
+    label: "落花生",
+    dishes: ["落花生ごはん", "豆腐と野菜のスープ", "ごぼうサラダ（ピーナッツドレッシング）", "みかん"],
+    comment: "千葉産の落花生をごはんにも、ドレッシングにも。香ばしい風味が食欲をそそります。",
+    source: "農林水産省 地場産物活用推進事業・全国学校給食協会 参考"
+  },
+  {
+    keywords: ["小松菜", "こまつな", "コマツナ"],
+    prefecture: "東京都",
+    label: "小松菜",
+    dishes: ["小松菜と厚揚げの炒め物", "わかめスープ", "大豆のトマト煮", "ごはん"],
+    comment: "江戸時代から東京で愛されてきた小松菜。カルシウム豊富な、体にやさしい一食。",
+    source: "農林水産省 地場産物活用推進事業・全国学校給食協会 参考"
+  },
+  {
+    keywords: ["三浦大根", "大根", "だいこん", "ダイコン"],
+    prefecture: "神奈川県",
+    label: "三浦大根",
+    dishes: ["三浦大根のそぼろ煮（大豆ミート）", "豆乳みそ汁", "ほうれん草のごま和え", "ごはん"],
+    comment: "みずみずしくて甘い三浦大根が、大豆ミートのうまみをぐっと引き立てます。",
+    source: "農林水産省 地場産物活用推進事業・全国学校給食協会 参考"
+  }
+];
+
+// マッチング関数
+function findMenuTemplate(input) {
+  if (!input || input.trim() === '') return null;
+  const q = input.trim();
+  return menuTemplates.find(t =>
+    t.keywords.some(k => q.includes(k) || k.includes(q))
+  ) || null;
+}
+
 // ── Calculation constants (unchanged from v1) ──────────────
 const WATER_PER_MEAL = 200;   // L per student per meal
 const CO2_PER_MEAL   = 0.8;   // kg CO2e per student per meal
@@ -2524,6 +2668,63 @@ function shareCard() {
       URL.revokeObjectURL(a.href);
     }
   }, 'image/png');
+}
+
+// ── 献立プレビュー表示 ──
+function previewMenu(value) {
+  const preview = document.getElementById('menu-preview');
+  const notfound = document.getElementById('menu-notfound');
+  const template = findMenuTemplate(value);
+
+  if (!value || value.trim() === '') {
+    preview.style.display = 'none';
+    preview.style.opacity = 0;
+    notfound.style.display = 'none';
+    return;
+  }
+
+  if (template) {
+    document.getElementById('menu-prefecture').textContent = template.prefecture;
+
+    const ul = document.getElementById('menu-dishes');
+    ul.innerHTML = template.dishes.map(d =>
+      `<li style="font-size:0.92rem;font-weight:700;color:var(--green-deep);padding:5px 0 5px 18px;position:relative;">
+        <span style="position:absolute;left:0;top:6px;width:8px;height:8px;border-radius:50%;background:var(--green-soft);display:inline-block;"></span>
+        ${d}
+      </li>`
+    ).join('');
+
+    document.getElementById('menu-comment').textContent = template.comment;
+    document.getElementById('menu-source').textContent = '参考：' + template.source;
+
+    notfound.style.display = 'none';
+    preview.style.display = 'block';
+    // フェードイン（opacity 0 → 1）
+    requestAnimationFrame(() => { preview.style.opacity = 1; });
+    trackEvent('menu-' + template.prefecture);
+  } else {
+    preview.style.display = 'none';
+    preview.style.opacity = 0;
+    notfound.style.display = 'block';
+  }
+}
+
+// ── 献立シェア ──
+function shareMenu() {
+  const ingredient = document.getElementById('ingredient-input').value;
+  const template = findMenuTemplate(ingredient);
+  if (!template) return;
+  trackEvent('menu-share');
+
+  const text = `【未来給食の献立シミュレーター】\n${template.prefecture}の特産品「${template.label}」を使った100%植物性の給食献立を作ってみました！\n\n${template.dishes.join(' / ')}\n\n${template.comment}\n\nあなたの地域の献立も試してみてください👇\nhttps://smile-kyushoku-project.github.io/mirai-kyushoku/`;
+
+  if (navigator.share) {
+    navigator.share({ text }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('テキストをコピーしました！SNSに貼り付けてシェアしてください。');
+    });
+  }
 }
 </script>
 </body>
