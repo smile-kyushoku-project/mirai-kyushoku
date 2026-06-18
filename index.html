@@ -1148,18 +1148,18 @@
   #report-page { display: none; }
 
   @media print {
-    body * { visibility: hidden; }
-    #report-page, #report-page * { visibility: visible; }
+    /* hide everything except the report from the print flow (no blank pages) */
+    body > *:not(#report-page) { display: none !important; }
+    html, body { height: auto !important; background: #fff !important; }
     #report-page {
       display: block;
-      position: absolute;
-      left: 0; top: 0;
+      position: static;
       width: 100%;
       background: #fff;
       padding: 10mm 14mm;
     }
-    body { background: #fff; }
   }
+  @page { margin: 0; }
   #report-page { font-size: 10.5pt; color: var(--ink); line-height: 1.9; }
   #report-page .rp-head {
     text-align: center;
