@@ -36,7 +36,7 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; font-size: 17px; }
 
   body {
     font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'Hiragino Sans', 'Yu Gothic', sans-serif;
@@ -225,8 +225,8 @@
     color: #fff;
     border: none;
     border-radius: 999px;
-    padding: 16px 54px;
-    font-size: 1.08rem;
+    padding: 16px 42px;
+    font-size: 1.2rem;
     font-weight: 700;
     font-family: inherit;
     letter-spacing: 0.12em;
@@ -245,8 +245,8 @@
     color: #fff;
     text-decoration: none;
     border-radius: 999px;
-    padding: 13px 32px;
-    font-size: 0.98rem;
+    padding: 13px 22px;
+    font-size: 1rem;
     font-weight: 700;
     font-family: inherit;
     letter-spacing: 0.06em;
@@ -373,8 +373,8 @@
     color: var(--green-deep);
     border: 1.5px solid var(--green-soft);
     border-radius: 999px;
-    padding: 12px 40px;
-    font-size: 0.95rem;
+    padding: 14px 28px;
+    font-size: 1.06rem;
     font-weight: 700;
     font-family: inherit;
     letter-spacing: 0.1em;
@@ -545,12 +545,12 @@
   .fold > summary .fold-cue {
     display: inline-block;
     margin-top: 12px;
-    font-size: 0.78rem;
+    font-size: 0.95rem;
     font-weight: 700;
     color: var(--green);
     border: 1.5px solid var(--green-soft);
     border-radius: 999px;
-    padding: 4px 20px;
+    padding: 7px 24px;
   }
   .fold[open] > summary .fold-cue { display: none; }
   .fold > summary .fold-cue::after { content: ' ▾'; }
@@ -830,8 +830,8 @@
     background: var(--paper);
     border: 1.5px solid var(--green-soft);
     border-radius: 999px;
-    padding: 11px 26px;
-    font-size: 0.9rem;
+    padding: 12px 28px;
+    font-size: 1.02rem;
     font-weight: 700;
     font-family: inherit;
     color: var(--green-deep);
@@ -3061,7 +3061,7 @@ function peekFuture() {
 // ── Step 4: results ────────────────────────────────────────
 // chip starts hidden ("？") and reveals its value on tap — quiz-style discovery
 function chip(label, value) {
-  return `<button type="button" class="compare-chip" data-value="${value}">${label} <span class="cc-q">？</span></button>`;
+  return `<span class="compare-chip revealed">${label} <b>${value}</b></span>`;
 }
 
 function periodLabel() {
