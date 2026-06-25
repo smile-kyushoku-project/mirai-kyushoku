@@ -2925,13 +2925,31 @@ const MENU_VARIANTS = {
 };
 
 let currentTemplate = null;
+let currentLocal = false;   // いま表示中の献立が「地産地消ローカライズ」かどうか
+
+// 地産地消で他県の食材を表示するとき、献立名に紛れる特産名を一般的な食材名へ
+const LOCAL_NAME_MAP = {
+  "三浦大根": "大根", "賀茂なす": "なす", "水なす": "なす", "天王寺かぶ": "かぶ",
+  "九条ねぎ": "ねぎ", "深谷ねぎ": "ねぎ", "金沢ねぎ": "ねぎ", "大山白ねぎ": "白ねぎ",
+  "加賀れんこん": "れんこん", "熊本トマト": "トマト", "宮崎ピーマン": "ピーマン",
+  "仙台みそ": "みそ", "八丁みそ": "みそ", "白みそ": "みそ", "赤みそ": "みそ",
+  "三陸わかめ": "わかめ", "萩わかめ": "わかめ", "鳴門わかめ": "わかめ", "隠岐わかめ": "わかめ",
+  "だだちゃ豆": "枝豆", "くろさき茶豆": "枝豆", "伊勢いも": "山いも", "大和まな": "青菜"
+};
+function genericDish(d) {
+  let s = d;
+  for (const k in LOCAL_NAME_MAP) { s = s.split(k).join(LOCAL_NAME_MAP[k]); }
+  return s;
+}
 
 function menuPool(t) { return [t.dishes].concat(MENU_VARIANTS[t.label] || []); }
-function pickDishes(t, avoid) {
+function pickDishes(t, isLocal, avoid) {
   const pool = menuPool(t);
-  if (pool.length === 1) return pool[0];
+  const disp = arr => isLocal ? arr.map(genericDish) : arr.slice();
+  if (pool.length === 1) return disp(pool[0]);
   let pick;
-  do { pick = pool[Math.floor(Math.random() * pool.length)]; } while (avoid && pick === avoid);
+  do { pick = disp(pool[Math.floor(Math.random() * pool.length)]); }
+  while (avoid && pool.length > 1 && pick.join('|') === avoid.join('|'));
   return pick;
 }
 function renderMenuDishes(dishes) {
@@ -3547,9 +3565,10 @@ function previewMenu(value) {
 
   if (template) {
     // 同じ食材を入力中は献立を固定（キーストロークでチラつかせない）。食材が変わったらランダムに選び直す
-    const same = currentTemplate && currentTemplate.label === template.label && currentTemplate.prefecture === template.prefecture;
-    const dishes = (same && currentMenu) ? currentMenu.dishes : pickDishes(template);
+    const same = currentTemplate && !currentLocal && currentTemplate.label === template.label && currentTemplate.prefecture === template.prefecture;
+    const dishes = (same && currentMenu) ? currentMenu.dishes : pickDishes(template, false);
     currentTemplate = template;
+    currentLocal = false;
     currentMenu = Object.assign({}, template, { dishes });
 
     document.getElementById('menu-prefecture').textContent = template.prefecture;
@@ -3578,7 +3597,7 @@ function previewMenu(value) {
 // 「↻ 別の献立」: いま表示中の食材で、別のバリエーションに切り替える
 function rerollMenu() {
   if (!currentTemplate) return;
-  const dishes = pickDishes(currentTemplate, currentMenu && currentMenu.dishes);
+  const dishes = pickDishes(currentTemplate, currentLocal, currentMenu && currentMenu.dishes);
   currentMenu = Object.assign({}, currentTemplate, { dishes });
   renderMenuDishes(dishes);
   trackEvent('menu-reroll');
@@ -3669,8 +3688,9 @@ function showLocalVegMenu(pref, name, t) {
     comment: pref + 'でとれた' + name + 'を使った、地産地消の一食です。地元の恵みを、子どもたちの食卓に。',
     source: '地場産物（地産地消）の活用'
   });
-  const dishes = pickDishes(local);
   currentTemplate = local;
+  currentLocal = true;
+  const dishes = pickDishes(local, true);
   currentMenu = Object.assign({}, local, { dishes });
   document.getElementById('menu-prefecture').textContent = pref;
   renderMenuDishes(dishes);
