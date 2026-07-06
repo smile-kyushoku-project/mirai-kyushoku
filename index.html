@@ -1881,16 +1881,8 @@
         </div>
         <ul id="menu-dishes" style="list-style:none;margin-bottom:14px;"></ul>
         <p id="menu-comment" style="font-size:0.88rem;line-height:2;color:var(--ink);background:var(--paper);border-radius:10px;padding:12px 16px;"></p>
-        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
-          <button onclick="shareMenu()" style="display:inline-flex;align-items:center;gap:6px;background:var(--terra);border:none;border-radius:999px;padding:9px 22px;font-size:0.85rem;font-weight:700;font-family:inherit;color:#fff;cursor:pointer;">
-            この献立をシェアする
-          </button>
-          <a href="mailto:japan@animalallianceasia.org?subject=未来給食の献立について相談したい"
-            style="display:inline-flex;align-items:center;background:var(--paper);border:1.5px solid var(--green-soft);border-radius:999px;padding:9px 22px;font-size:0.85rem;font-weight:700;font-family:inherit;color:var(--green-deep);text-decoration:none;">
-            学校に提案する
-          </a>
-        </div>
-        <p id="menu-source" style="font-size:0.68rem;color:var(--ink-soft);margin-top:12px;"></p>
+        <p style="font-size:0.75rem;font-weight:700;color:var(--green-deep);margin-top:14px;">この献立は、下の「結果をシェアする」画像と「学校レポート」にも入ります。</p>
+        <p id="menu-source" style="font-size:0.68rem;color:var(--ink-soft);margin-top:10px;"></p>
         <p style="font-size:0.68rem;color:var(--ink-soft);margin-top:4px;">※ この献立はイメージです。実際の提供にあたっては学校栄養士と相談の上、文部科学省の学校給食摂取基準に基づいた献立を作成してください。アレルギーのあるお子さんは個別にご確認ください。</p>
       </div>
 
@@ -1898,7 +1890,7 @@
       <div id="menu-notfound" style="display:none;margin-top:14px;padding:14px 18px;background:var(--cream-deep);border-radius:12px;">
         <p style="font-size:0.85rem;color:var(--ink-soft);line-height:2;">
           まだ対応していない食材です。対応地域を順次拡大しています。<br>
-          <span style="font-size:0.78rem;">あなたの地域でとれる食材を<a href="mailto:japan@animalallianceasia.org" style="color:var(--green-deep);">教えてください</a>。</span>
+          <span style="font-size:0.78rem;">あなたの地域でとれる食材を<a href="mailto:japan@animalallianceasia.org?subject=未来給食：地域の食材のご提案" style="color:var(--green-deep);">教えてください</a>。</span>
         </p>
       </div>
     </div>
@@ -1908,7 +1900,7 @@
       <div class="cta-grid">
         <button class="cta-btn primary" onclick="shareCard()">結果をシェアする</button>
         <button class="cta-btn" onclick="printReport()">学校レポートを保存</button>
-        <a class="cta-btn" href="mailto:japan@animalallianceasia.org">導入を相談する</a>
+        <a class="cta-btn" href="mailto:japan@animalallianceasia.org?subject=未来給食の導入相談">導入を相談する</a>
       </div>
     </div>
 
@@ -2373,7 +2365,7 @@
         <button class="cta-btn" onclick="printReport()">学校レポートを保存</button>
         <a class="cta-btn" id="cta-site" href="#" target="_blank" rel="noopener" style="display:none">公式サイトを見る</a>
         <a class="cta-btn" id="cta-insta" href="#" target="_blank" rel="noopener" style="display:none">Instagramをフォロー</a>
-        <a class="cta-btn" id="cta-mail" href="mailto:japan@animalallianceasia.org" style="display:none">メールで相談する</a>
+        <a class="cta-btn" id="cta-mail" href="mailto:japan@animalallianceasia.org?subject=未来給食の導入相談" style="display:none">メールで相談する</a>
       </div>
     </div>
 
@@ -3198,7 +3190,7 @@ let currentMenu = null;   // 献立シミュレーターで選ばれた献立（
 window.addEventListener('DOMContentLoaded', () => {
   if (LINKS.site)      { const a = document.getElementById('cta-site');  a.href = LINKS.site; a.style.display = ''; a.addEventListener('click', () => trackEvent('cta-site')); }
   if (LINKS.instagram) { const a = document.getElementById('cta-insta'); a.href = LINKS.instagram; a.style.display = ''; a.addEventListener('click', () => trackEvent('cta-instagram')); }
-  if (LINKS.email)     { const a = document.getElementById('cta-mail');  a.href = 'mailto:' + LINKS.email; a.style.display = ''; a.addEventListener('click', () => trackEvent('cta-mail')); }
+  if (LINKS.email)     { const a = document.getElementById('cta-mail');  a.href = 'mailto:' + LINKS.email + '?subject=未来給食の導入相談'; a.style.display = ''; a.addEventListener('click', () => trackEvent('cta-mail')); }
 });
 
 // ── Formatting ─────────────────────────────────────────────
@@ -3545,7 +3537,7 @@ function shareCard() {
   if (!results) return;
   trackEvent('share-card');
   const r = results;
-  const W = 1080, H = 1080;
+  const W = 1080, H = currentMenu ? 1230 : 1080;   // 献立があれば献立欄のぶん縦に伸ばす
   const cv = document.createElement('canvas');
   cv.width = W; cv.height = H;
   const ctx = cv.getContext('2d');
@@ -3605,15 +3597,40 @@ function shareCard() {
     ctx.textAlign = 'center';
   });
 
+  // menu (シミュレーターで献立を作っていたら画像にも入れる)
+  if (currentMenu) {
+    const my = 850;
+    ctx.fillStyle = '#f3ecd9';
+    roundRect(ctx, 120, my, W - 240, 160, 24);
+    ctx.fill();
+    ctx.fillStyle = '#44693b';
+    ctx.font = `700 28px ${F}`;
+    ctx.textAlign = 'left';
+    ctx.fillText(`献立（${currentMenu.prefecture}・${currentMenu.label}）`, 160, my + 52);
+    ctx.fillStyle = '#4a4438';
+    ctx.font = `500 26px ${F}`;
+    const maxW = W - 320;
+    const lines = [];
+    let line = '';
+    for (const dish of currentMenu.dishes) {
+      const cand = line ? line + '　' + dish : dish;
+      if (line && ctx.measureText(cand).width > maxW) { lines.push(line); line = dish; }
+      else line = cand;
+    }
+    if (line) lines.push(line);
+    lines.slice(0, 2).forEach((l, i) => ctx.fillText(l, 160, my + 98 + i * 40));
+    ctx.textAlign = 'center';
+  }
+
   // message
   ctx.fillStyle = '#7d5547';
   ctx.font = `500 30px ${F}`;
-  ctx.fillText('子どもたちに、“選べる未来”を一緒に。', W / 2, 920);
+  ctx.fillText('子どもたちに、“選べる未来”を一緒に。', W / 2, H - 160);
 
   // URL
   ctx.fillStyle = '#8a8270';
   ctx.font = `500 26px ${F}`;
-  ctx.fillText(SITE_URL.replace('https://', ''), W / 2, 975);
+  ctx.fillText(SITE_URL.replace('https://', ''), W / 2, H - 105);
 
   cv.toBlob(blob => {
     const file = new File([blob], 'mirai-kyushoku.png', { type: 'image/png' });
