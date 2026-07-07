@@ -1257,8 +1257,8 @@
     }
   }
   @page { margin: 0; }
-  #report-page { font-size: 9.3pt; color: var(--ink); line-height: 1.55; }
-  #report-page .rp-page { padding: 12mm 14mm; page-break-after: always; break-after: page; }
+  #report-page { font-size: 10pt; color: var(--ink); line-height: 1.68; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  #report-page .rp-page { padding: 13mm 15mm; page-break-after: always; break-after: page; }
   #report-page .rp-page:last-child { page-break-after: auto; break-after: auto; }
   #report-page .rp-sec { break-inside: avoid; page-break-inside: avoid; }
   #report-page .rp-pagehead {
@@ -1283,48 +1283,47 @@
     padding: 4px 2px; margin-bottom: 8px;
   }
   #report-page h2 {
-    font-size: 9.8pt;
-    color: #fff;
-    background: var(--green-deep);
-    border-radius: 999px;
-    display: inline-block;
-    padding: 2px 15px;
-    margin: 9px 0 5px;
+    font-size: 11pt;
+    color: var(--green-deep);
+    border-left: 4pt solid var(--green);
+    padding: 1px 0 1px 8px;
+    margin: 14px 0 6px;
     font-weight: 700;
   }
+  #report-page h2 .h2-sub { color: #5f584a; }
   #report-page .rp-proposal-box {
     border: 1.6pt solid var(--green-deep);
     border-radius: 9px;
     background: #f2f6ee;
-    padding: 9px 13px;
-    font-size: 10.2pt;
-    line-height: 1.7;
+    padding: 11px 15px;
+    font-size: 11pt;
+    line-height: 1.8;
   }
   #report-page .rp-plan { margin: 3px 0 0; padding: 0; list-style: none; }
   #report-page .rp-plan li {
-    display: flex; gap: 10px; padding: 3.5px 0;
-    border-bottom: 1pt dotted #cfc8b6; font-size: 9.2pt;
+    display: flex; gap: 10px; padding: 5.5px 0;
+    border-bottom: 1pt dotted #cfc8b6; font-size: 10pt;
   }
   #report-page .rp-plan li:last-child { border-bottom: none; }
   #report-page .rp-plan .k {
-    flex-shrink: 0; width: 62px; font-weight: 700; color: var(--green-deep);
+    flex-shrink: 0; width: 66px; font-weight: 700; color: var(--green-deep);
   }
   #report-page .rp-ask {
     border: 1.2pt solid var(--green-soft);
     border-radius: 9px; background: #fbf9f1;
-    padding: 8px 13px; font-size: 9.4pt; line-height: 1.7;
+    padding: 10px 15px; font-size: 10.2pt; line-height: 1.8;
   }
   #report-page .rp-qa { margin-top: 6px; }
   #report-page .rp-qa .q {
-    font-size: 9.6pt; font-weight: 700; color: var(--green-deep);
-    margin-top: 8px;
+    font-size: 10.6pt; font-weight: 700; color: var(--green-deep);
+    margin-top: 13px;
   }
   #report-page .rp-qa .q::before { content: "Q. "; }
-  #report-page .rp-qa .a { font-size: 9.1pt; margin-top: 1px; }
+  #report-page .rp-qa .a { font-size: 10pt; margin-top: 2px; }
   #report-page .rp-qa .a::before { content: "A. "; font-weight: 700; color: var(--terra); }
   #report-page .rp-cases-list { margin: 3px 0 0; padding: 0; list-style: none; }
   #report-page .rp-cases-list li {
-    font-size: 9.1pt; padding: 2.5px 0 2.5px 13px; position: relative;
+    font-size: 10pt; padding: 4.5px 0 4.5px 14px; position: relative;
   }
   #report-page .rp-cases-list li::before {
     content: ""; position: absolute; left: 0; top: 0.72em;
@@ -1334,12 +1333,12 @@
     margin-top: 10px; border-top: 1.2pt solid var(--line); padding-top: 7px;
     display: flex; gap: 16px; align-items: center;
   }
-  #report-page .rp-issuer .rp-issuer-text { flex: 1; font-size: 8.8pt; }
-  #report-page .rp-issuer .rp-issuer-text .nm { font-weight: 700; color: var(--green-deep); font-size: 9.4pt; }
+  #report-page .rp-issuer .rp-issuer-text { flex: 1; font-size: 9.4pt; }
+  #report-page .rp-issuer .rp-issuer-text .nm { font-weight: 700; color: var(--green-deep); font-size: 10.2pt; }
   #report-page h2 .h2-sub { font-weight: 400; font-size: 8.6pt; opacity: 0.92; }
   #report-page p { margin: 0; }
-  #report-page .rp-lead { font-size: 9.2pt; }
-  #report-page .rp-grid { display: flex; gap: 9px; margin-top: 4px; }
+  #report-page .rp-lead { font-size: 10pt; }
+  #report-page .rp-grid { display: flex; gap: 10px; margin-top: 5px; }
   #report-page .rp-tile {
     flex: 1;
     border: 1.2pt solid var(--line);
@@ -1347,29 +1346,29 @@
     padding: 8px 10px;
     text-align: center;
   }
-  #report-page .rp-tile .t { font-size: 9pt; font-weight: 700; color: var(--green-deep); }
-  #report-page .rp-tile .v { font-size: 12.5pt; font-weight: 700; color: var(--green-deep); }
-  #report-page .rp-tile .c { font-size: 8pt; color: #5f584a; margin-top: 1px; }
+  #report-page .rp-tile .t { font-size: 9.8pt; font-weight: 700; color: var(--green-deep); }
+  #report-page .rp-tile .v { font-size: 14pt; font-weight: 700; color: var(--green-deep); }
+  #report-page .rp-tile .c { font-size: 8.8pt; color: #5f584a; margin-top: 1px; }
   #report-page .rp-assure .rp-tile { text-align: left; }
   #report-page .rp-assure .rp-tile .t::before { content: "✓ "; color: var(--green); }
-  #report-page .rp-assure .rp-tile .d { font-size: 8.3pt; color: var(--ink); margin-top: 2px; line-height: 1.5; }
-  #report-page .rp-basis { font-size: 7.9pt; color: #6b6355; margin-top: 4px; }
+  #report-page .rp-assure .rp-tile .d { font-size: 9pt; color: var(--ink); margin-top: 3px; line-height: 1.6; }
+  #report-page .rp-basis { font-size: 8.4pt; color: #6b6355; margin-top: 5px; }
   #report-page .rp-menu { background: var(--cream); border-radius: 9px; padding: 8px 12px; }
   #report-page .rp-menu ul { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 0 0 5px; }
-  #report-page .rp-menu li { font-size: 8.8pt; font-weight: 700; color: var(--green-deep); background: #fff; border: 1pt solid var(--green-soft); border-radius: 999px; padding: 1px 11px; }
-  #report-page .rp-menu-comment { font-size: 8.7pt; }
-  #report-page .rp-menu-source { font-size: 7.8pt; color: #6b6355; margin-top: 3px; }
+  #report-page .rp-menu li { font-size: 9.6pt; font-weight: 700; color: var(--green-deep); background: #fff; border: 1pt solid var(--green-soft); border-radius: 999px; padding: 2px 12px; }
+  #report-page .rp-menu-comment { font-size: 9.4pt; }
+  #report-page .rp-menu-source { font-size: 8.4pt; color: #6b6355; margin-top: 3px; }
   #report-page .rp-cases { font-size: 8.7pt; }
-  #report-page .rp-tags-line { font-size: 8.4pt; color: #5f584a; margin-top: 6px; }
-  #report-page .rp-start { display: flex; gap: 16px; align-items: center; margin-top: 2px; }
+  #report-page .rp-tags-line { font-size: 9pt; color: #5f584a; margin-top: 8px; }
+  #report-page .rp-start { display: flex; gap: 16px; align-items: center; margin-top: 4px; }
   #report-page .rp-start-text { flex: 1; }
-  #report-page .rp-start-text p { font-size: 9pt; }
-  #report-page .rp-contact { font-size: 8.6pt; color: var(--green-deep); margin-top: 4px; }
+  #report-page .rp-start-text p { font-size: 10pt; }
+  #report-page .rp-contact { font-size: 9.4pt; color: var(--green-deep); margin-top: 6px; }
   #report-page .rp-qr { text-align: center; }
   #report-page .rp-qr img { width: 76px; height: 76px; display: block; }
-  #report-page .rp-qr span { font-size: 7.4pt; color: #6b6355; display: block; margin-top: 2px; }
-  #report-page .rp-closing { text-align: center; font-size: 9.4pt; color: var(--green-deep); font-weight: 700; margin-top: 10px; }
-  #report-page .rp-note { font-size: 7.9pt; color: #6b6355; margin-top: 8px; border-top: 1pt solid var(--line); padding-top: 6px; }
+  #report-page .rp-qr span { font-size: 8pt; color: #6b6355; display: block; margin-top: 2px; }
+  #report-page .rp-closing { text-align: center; font-size: 10.4pt; color: var(--green-deep); font-weight: 700; margin-top: 14px; }
+  #report-page .rp-note { font-size: 8.4pt; color: #6b6355; margin-top: 10px; border-top: 1pt solid var(--line); padding-top: 7px; }
 
   /* ── 献立シミュレーター(スマホ縦並び) ── */
   @media (max-width: 480px) {
@@ -2549,6 +2548,16 @@
     </div>
   </div>
 
+  <div class="rp-sec">
+    <h2>すでに実施している学校・自治体</h2>
+    <ul class="rp-cases-list">
+      <li><b>八王子市立浅川小学校</b>（東京・公立）── 2021年〜、月1回の「エブリワン給食」を実施</li>
+      <li><b>千葉県匝瑳市</b> ── 2026年、市内全13の小中学校で精進料理給食を一斉実施</li>
+      <li><b>One Table Day</b>（全国の保育園・こども園）── 2022年〜、兵庫から岩手・福島・埼玉・新潟へ拡大</li>
+      <li><b>海外</b> ── 韓国ソウル「グリーン給食の日」（2021年〜）／ニューヨーク市 毎週金曜（2023年〜）／ポルトガル 法律で「選べる権利」を保障（2017年）</li>
+    </ul>
+  </div>
+
   <div class="rp-sec" id="rp-menu-section" style="display:none">
     <h2>ご参考：献立例 <span class="h2-sub" id="rp-menu-pref"></span></h2>
     <div class="rp-menu">
@@ -2570,16 +2579,6 @@
       <div class="rp-tile"><div class="t">温室効果ガス</div><div class="v" id="rp-co2">—</div><div class="c" id="rp-co2-c">—</div></div>
     </div>
     <p class="rp-basis">計算根拠：1食あたり 水約200L・温室効果ガス約0.8kg・土地約15㎡の節約 × 人数 × 回数。出典：オックスフォード大学の研究（Poore &amp; Nemecek, 2018, Science）ほか。</p>
-  </div>
-
-  <div class="rp-sec">
-    <h2>すでに実施している学校・自治体</h2>
-    <ul class="rp-cases-list">
-      <li><b>八王子市立浅川小学校</b>（東京・公立）── 2021年〜、月1回の「エブリワン給食」を実施</li>
-      <li><b>千葉県匝瑳市</b> ── 2026年、市内全13の小中学校で精進料理給食を一斉実施</li>
-      <li><b>One Table Day</b>（全国の保育園・こども園）── 2022年〜、兵庫から岩手・福島・埼玉・新潟へ拡大</li>
-      <li><b>海外</b> ── 韓国ソウル「グリーン給食の日」（2021年〜）／ニューヨーク市 毎週金曜（2023年〜）／ポルトガル 法律で「選べる権利」を保障（2017年）</li>
-    </ul>
     <p class="rp-tags-line">育てる価値：健康／多様性／環境／思いやり／日本の食文化／食育　・　SDGs：2・3・6・12・13・15 に貢献</p>
   </div>
 
