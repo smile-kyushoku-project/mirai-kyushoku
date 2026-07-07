@@ -1329,6 +1329,13 @@
     content: ""; position: absolute; left: 0; top: 0.72em;
     width: 6px; height: 6px; border-radius: 50%; background: var(--green);
   }
+  #report-page .rp-sdg-grid { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 6px; }
+  #report-page .rp-sdg-item {
+    display: flex; align-items: center; gap: 7px;
+    width: calc(33.3% - 11px);
+    font-size: 9.4pt; font-weight: 700; color: var(--ink);
+  }
+  #report-page .rp-sdg-item svg { width: 24px; height: 24px; flex-shrink: 0; display: block; }
   #report-page .rp-issuer {
     margin-top: 10px; border-top: 1.2pt solid var(--line); padding-top: 7px;
     display: flex; gap: 16px; align-items: center;
@@ -2579,7 +2586,21 @@
       <div class="rp-tile"><div class="t">温室効果ガス</div><div class="v" id="rp-co2">—</div><div class="c" id="rp-co2-c">—</div></div>
     </div>
     <p class="rp-basis">計算根拠：1食あたり 水約200L・温室効果ガス約0.8kg・土地約15㎡の節約 × 人数 × 回数。出典：オックスフォード大学の研究（Poore &amp; Nemecek, 2018, Science）ほか。</p>
-    <p class="rp-tags-line">育てる価値：健康／多様性／環境／思いやり／日本の食文化／食育　・　SDGs：2・3・6・12・13・15 に貢献</p>
+    <p class="rp-tags-line">育てる価値：健康／多様性／環境／思いやり／日本の食文化／食育</p>
+  </div>
+
+  <div class="rp-sec">
+    <h2>SDGs（持続可能な開発目標）への貢献</h2>
+    <p class="rp-lead">未来給食は、2030年までの世界共通目標SDGsのうち、特に次の6つの目標につながっています。</p>
+    <div class="rp-sdg-grid">
+      <div class="rp-sdg-item"><svg viewBox="0 0 28 28"><rect width="28" height="28" rx="4" fill="#d3a02e"/><text x="14" y="20" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">2</text></svg><span>飢餓をゼロに</span></div>
+      <div class="rp-sdg-item"><svg viewBox="0 0 28 28"><rect width="28" height="28" rx="4" fill="#4C9F38"/><text x="14" y="20" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">3</text></svg><span>すべての人に健康と福祉を</span></div>
+      <div class="rp-sdg-item"><svg viewBox="0 0 28 28"><rect width="28" height="28" rx="4" fill="#4fa8c5"/><text x="14" y="20" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">6</text></svg><span>安全な水とトイレを世界中に</span></div>
+      <div class="rp-sdg-item"><svg viewBox="0 0 28 28"><rect width="28" height="28" rx="4" fill="#BF8B2E"/><text x="14" y="20" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">12</text></svg><span>つくる責任 つかう責任</span></div>
+      <div class="rp-sdg-item"><svg viewBox="0 0 28 28"><rect width="28" height="28" rx="4" fill="#3F7E44"/><text x="14" y="20" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">13</text></svg><span>気候変動に具体的な対策を</span></div>
+      <div class="rp-sdg-item"><svg viewBox="0 0 28 28"><rect width="28" height="28" rx="4" fill="#5aa84f"/><text x="14" y="20" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">15</text></svg><span>陸の豊かさも守ろう</span></div>
+    </div>
+    <p class="rp-basis">学校・自治体のSDGs教育や、総合的な学習の時間の題材としてもご活用いただけます。</p>
   </div>
 
   <div class="rp-sec">
